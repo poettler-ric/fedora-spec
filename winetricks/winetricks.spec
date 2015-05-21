@@ -31,7 +31,7 @@ make install DESTDIR=%{buildroot}
 
 %files
 %defattr(-,root,root)
-%{_prefix}
+%{_bindir}/winetricks
 %doc %{_mandir}
 
 
