@@ -1,6 +1,6 @@
 Name:           winetricks
 Version:        20150416
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Winetricks is an easy way to work around problems in Wine.
 BuildArch:      noarch
 
@@ -10,7 +10,8 @@ URL:            https://github.com/Winetricks/winetricks
 Source0:        %{name}-%{version}.tar.gz
 
 #BuildRequires: 
-#Requires:      
+Requires:       wine
+Requires:       cabextract
 
 %description
 It has a menu of supported games/apps for which it can do all the workarounds
