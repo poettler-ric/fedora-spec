@@ -1,0 +1,26 @@
+From 9e2c876a685c1f6728cdcb748331413b2c7b4c6e Mon Sep 17 00:00:00 2001
+From: Richard Poettler <richard.poettler@gmail.com>
+Date: Fri, 26 Jun 2015 10:53:14 +0200
+Subject: [PATCH] add /usr/share/pyfa to python searchpath
+
+---
+ pyfa.py | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/pyfa.py b/pyfa.py
+index 76b7ca3..da9c7ce 100755
+--- a/pyfa.py
++++ b/pyfa.py
+@@ -63,6 +63,9 @@ if not hasattr(sys, 'frozen'):
+         print("Cannot find sqlalchemy.\nYou can download sqlalchemy (0.6+) from http://www.sqlalchemy.org/")
+         sys.exit(1)
+ 
++# we installed pyfa specific modules into another directory
++sys.path.append("/usr/share/pyfa")
++
+ from optparse import OptionParser
+ 
+ if __name__ == "__main__":
+-- 
+1.8.3.1
+
