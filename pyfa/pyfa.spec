@@ -50,6 +50,11 @@ cp config.py $RPM_BUILD_ROOT/%{_datadir}/pyfa/
 # copy pyfa binary
 install -m 755 -D pyfa.py $RPM_BUILD_ROOT/%{_bindir}/pyfa
 
+# set the directory containing all static files
+cat <<eof >>$RPM_BUILD_ROOT/%{_datadir}/pyfa/configforced.py
+pyfaPath = "%{_datadir}/pyfa"
+eof
+
 
 %files
 %defattr(-,root,root)
