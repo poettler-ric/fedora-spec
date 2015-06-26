@@ -11,6 +11,7 @@ License:	GPL3
 URL:		https://github.com/DarkFenX/Pyfa
 Source0:	https://github.com/DarkFenX/Pyfa/archive/Pyfa-%{version}.tar.gz
 Patch0:         add-usr-share-pyfa-to-python-searchpath.patch
+Patch1:         fixed-eos-path-for-eve.db.patch
 
 BuildRequires:	python2-devel
 Requires:	wxPython
@@ -31,6 +32,7 @@ possible combination of modules, fits, etc.
 %setup -q -n Pyfa-%{version}
 
 %patch0 -p1
+%patch1 -p1
 
 
 %build

@@ -1,0 +1,25 @@
+From e5d19bb4a041fd412f39ea2f4c0d0a36b4c59232 Mon Sep 17 00:00:00 2001
+From: Richard Poettler <richard.poettler@gmail.com>
+Date: Fri, 26 Jun 2015 17:53:58 +0200
+Subject: [PATCH] fixed eos path for eve.db
+
+---
+ eos/config.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/eos/config.py b/eos/config.py
+index 35e2fe0..7decfbd 100644
+--- a/eos/config.py
++++ b/eos/config.py
+@@ -4,7 +4,7 @@ import sys
+ debug = False
+ gamedataCache = True
+ saveddataCache = True
+-gamedata_connectionstring = 'sqlite:///' + unicode(realpath(join(dirname(abspath(__file__)), "..", "staticdata", "eve.db")), sys.getfilesystemencoding())
++gamedata_connectionstring = 'sqlite:///' + unicode(realpath(join("usr", "share", "pyfa", "staticdata", "eve.db")), sys.getfilesystemencoding())
+ saveddata_connectionstring = 'sqlite:///:memory:'
+ 
+ #Autodetect path, only change if the autodetection bugs out.
+-- 
+2.4.3
+
