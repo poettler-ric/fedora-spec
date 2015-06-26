@@ -1,4 +1,3 @@
-# FIXME: fix references to files in icons and staticdata
 # TODO: put eos in its own subpackage
 
 Name:		pyfa
