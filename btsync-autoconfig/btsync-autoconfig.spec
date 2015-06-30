@@ -12,6 +12,7 @@ BuildRequires:          systemd
 Requires(post):         systemd
 Requires(preun):        systemd
 Requires(postun):       systemd
+Requires:       btsync
 
 BuildArch:      noarch
 
