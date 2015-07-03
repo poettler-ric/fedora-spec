@@ -98,7 +98,7 @@ rm -r %{btsync_tmpdir}
 %{_unitdir}/*
 %{_userunitdir}/*
 %{_tmpfilesdir}/*
-%doc %{_defaultlicensedir}/LICENSE.TXT
+%doc %{_defaultlicensedir}/%{name}/LICENSE.TXT
 
 
 
