@@ -36,7 +36,7 @@ Requires(postun):       systemd
 #BuildRequires:  
 #Requires:       btsync-autoconfig
 
-ExclusiveArch:  x86_64
+BuildArch:      x86_64
 
 %description
 Device to device synchronization using bittorrent.
