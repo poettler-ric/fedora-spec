@@ -1,3 +1,10 @@
+#
+# How to create the source archive:
+# $ export VERSION=<version>
+# $ curl -o winetricks-${VERSION}.tar.gz \
+# >     https://codeload.github.com/Winetricks/winetricks/tar.gz/${VERSION}
+#
+
 Name:           winetricks
 Version:        20150416
 Release:        2%{?dist}
