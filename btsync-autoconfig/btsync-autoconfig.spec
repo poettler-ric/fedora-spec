@@ -33,19 +33,19 @@ make install DESTDIR=%{buildroot}
 
 
 %post
-%systemd_post %{name}.service
+%systemd_post btsync-autoconfig.service
 
 %preun
-%systemd_preun %{name}.service
+%systemd_preun btsync-autoconfig.service
 
 %postun
-%systemd_postun_with_restart %{name}.service 
+%systemd_postun_with_restart btsync-autoconfig.service
 
 
 %files
 %defattr(-,root,root)
 %{_datadir}/%{name}
-%{_userunitdir}/%{name}.service
+%{_userunitdir}/btsync-autoconfig.service
 
 
 
