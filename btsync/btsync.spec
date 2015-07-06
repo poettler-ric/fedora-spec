@@ -59,7 +59,7 @@ install -D -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_userunitdir}/btsync.service
 install -D -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_tmpfilesdir}/btsync.conf
 
 # generate btsync config file
-mkdir %{_sysconfdir}
+mkdir $RPM_BUILD_ROOT/%{_sysconfdir}
 ./btsync  --dump-sample-config \
     | sed 's:/home/user/\.sync:%{btsync_datadir}:' \
     | sed 's:\/\/ "pid_file":  "pid_file":' \
