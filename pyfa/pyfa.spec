@@ -1,5 +1,12 @@
 # TODO: put eos in its own subpackage
 
+#
+# How to create the source archive:
+# $ export VERSION=<version>
+# $ curl -o pyfa-${VERSION}.tar.gz \
+# >     https://codeload.github.com/DarkFenX/Pyfa/tar.gz/v${VERSION}
+#
+
 Name:           pyfa
 Version:        1.12.0
 Release:        1%{?dist}
@@ -8,7 +15,7 @@ Summary:        Python fitting assistant, fitting tool for EVE Online
 Group:          -
 License:        GPL3
 URL:            https://github.com/DarkFenX/Pyfa
-Source0:        https://github.com/DarkFenX/Pyfa/archive/Pyfa-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 Patch0:         add-usr-share-pyfa-to-python-searchpath.patch
 Patch1:         fixed-eos-path-for-eve.db.patch
 
