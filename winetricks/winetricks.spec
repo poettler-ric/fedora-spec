@@ -1,4 +1,6 @@
 #
+# Hosted at https://copr.fedoraproject.org/coprs/poettlerric/winetricks/
+#
 # How to create the source archive:
 # $ export VERSION=<version>
 # $ curl -o winetricks-${VERSION}.tar.gz \
