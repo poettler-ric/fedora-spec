@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Terminal=false
+Name=Pyfa
+Comment=Python fitting assistant
+Exec=pyfa
+Icon=/usr/share/icons/hicolor/64x64/apps/pyfa.png
+Categories=GTK;Game
+

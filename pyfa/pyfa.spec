@@ -16,10 +16,12 @@ Group:          -
 License:        GPL3
 URL:            https://github.com/DarkFenX/Pyfa
 Source0:        %{name}-%{version}.tar.gz
+Source1:        pyfa.desktop
 Patch0:         add-usr-share-pyfa-to-python-searchpath.patch
 Patch1:         fixed-eos-path-for-eve.db.patch
 
 BuildRequires:  python2-devel
+BuildRequires:  desktop-file-utils
 Requires:       wxPython
 Requires:       python-sqlalchemy
 Requires:       python-dateutil
@@ -63,12 +65,38 @@ cat <<eof >>$RPM_BUILD_ROOT/%{_datadir}/pyfa/configforced.py
 pyfaPath = "%{_datadir}/pyfa"
 eof
 
+# install .desktop file
+desktop-file-install --dir $RPM_BUILD_ROOT/%{_datadir}/applications %{SOURCE1}
+# install pyfa icons
+install -D icons/pyfa.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/32x32/apps/pyfa.png
+install -D icons/pyfa64.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/64x64/apps/pyfa.png
+
+
+%post
+update-desktop-database &> /dev/null || :
+touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+
+
+%postun
+if [ $1 -eq 0 ]
+then
+    touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+fi
+
+
+%posttrans
+gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+
 
 %files
 %defattr(-,root,root)
 %{_bindir}/pyfa
 %{_datadir}/pyfa
 %{python2_sitelib}/eos
+%{_datadir}/applications/pyfa.desktop
+%{_datadir}/icons/hicolor/32x32/apps/pyfa.png
+%{_datadir}/icons/hicolor/64x64/apps/pyfa.png
 
 
 
