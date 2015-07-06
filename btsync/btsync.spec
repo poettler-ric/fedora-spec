@@ -82,6 +82,9 @@ exit 0
 
 systemd-tmpfiles --create btsync.conf
 
+chmod 755 %{btsync_datadir}
+chown -R btsync.btsync %{btsync_datadir}
+
 %preun
 %systemd_preun btsync.service
 
