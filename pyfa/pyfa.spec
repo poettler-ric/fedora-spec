@@ -1,21 +1,21 @@
 # TODO: put eos in its own subpackage
 
-Name:		pyfa
-Version:	1.12.0
-Release:	1%{?dist}
-Summary:	Python fitting assistant, fitting tool for EVE Online 
+Name:           pyfa
+Version:        1.12.0
+Release:        1%{?dist}
+Summary:        Python fitting assistant, fitting tool for EVE Online
 
-Group:		-
-License:	GPL3
-URL:		https://github.com/DarkFenX/Pyfa
-Source0:	https://github.com/DarkFenX/Pyfa/archive/Pyfa-%{version}.tar.gz
+Group:          -
+License:        GPL3
+URL:            https://github.com/DarkFenX/Pyfa
+Source0:        https://github.com/DarkFenX/Pyfa/archive/Pyfa-%{version}.tar.gz
 Patch0:         add-usr-share-pyfa-to-python-searchpath.patch
 Patch1:         fixed-eos-path-for-eve.db.patch
 
-BuildRequires:	python2-devel
-Requires:	wxPython
-Requires:	python-sqlalchemy
-Requires:	python-dateutil
+BuildRequires:  python2-devel
+Requires:       wxPython
+Requires:       python-sqlalchemy
+Requires:       python-dateutil
 
 BuildArch:      noarch
 
