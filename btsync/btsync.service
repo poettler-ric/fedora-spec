@@ -7,7 +7,6 @@ Type=forking
 User=btsync
 Group=btsync
 ExecStart=/usr/bin/btsync --config /etc/btsync.conf
-PIDFile=/var/run/btsync/btsync.pid
 Restart=on-abort
 
 [Install]
