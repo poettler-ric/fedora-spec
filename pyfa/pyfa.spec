@@ -8,7 +8,7 @@
 #
 
 Name:           pyfa
-Version:        1.13.0
+Version:        1.13.1
 Release:        1%{?dist}
 Summary:        Python fitting assistant, fitting tool for EVE Online
 
@@ -19,7 +19,6 @@ Source0:        %{name}-%{version}.tar.gz
 Source1:        pyfa.desktop
 Patch0:         add-usr-share-pyfa-to-python-searchpath.patch
 Patch1:         fixed-eos-path-for-eve.db.patch
-Patch2:         fixed-logging-path.patch
 
 BuildRequires:  python2-devel
 BuildRequires:  desktop-file-utils
@@ -42,7 +41,6 @@ possible combination of modules, fits, etc.
 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 
 %build
