@@ -8,7 +8,7 @@
 #
 
 Name:           winetricks
-Version:        20150702
+Version:        20150706
 Release:        1%{?dist}
 Summary:        Winetricks is an easy way to work around problems in Wine.
 BuildArch:      noarch
