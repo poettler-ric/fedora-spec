@@ -8,7 +8,7 @@
 #
 
 Name:           pyfa
-Version:        1.13.1
+Version:        1.13.2
 Release:        1%{?dist}
 Summary:        Python fitting assistant, fitting tool for EVE Online
 
