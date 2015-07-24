@@ -28,10 +28,10 @@ ask for a password.
 * Disk (name: ``disk``, default: ``sda``)
 * Users (name: ``users``): dictionary of login -> userdata mappings.
   The userdata itself are dictionaries with the following options:
-    * **Comment** (name: ``gecos``): readable username
-    * **Password** (name: ``password``)
-    * Additional groups (name: ``groups``)
-    * UID (name: ``uid``)
+    * **Comment** (name: ``users.<login>.gecos``): readable username
+    * **Password** (name: ``users.<login>.password``)
+    * Additional groups (name: ``users.<login>.groups``)
+    * UID (name: ``users.<login>.uid``)
 * Desktop (name: ``windowmanager``): if undefined it will result in a minimal
   configuration. If defined the supported values are:
     * xfce
