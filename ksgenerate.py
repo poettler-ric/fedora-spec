@@ -6,7 +6,7 @@ Generates Fedora installation and update kickstart files.
 Supports multiple kickstart configurations in one yaml file. Values from
 a default section can be overwritten by custom values.
 
-Optinally loads the kickstart template from file.
+TODO: Optinally loads the kickstart template from file.
 
 Configuration options
 =====================
@@ -41,6 +41,7 @@ ask for a password.
     * gnome
 * Keymap
     * Console (name: ``keymap.vconsole`` default: ``us``)
+    TODO: replace with a list in the yaml configuration:
     * X-Layout (name: ``keymap.xlayout`` default: ``us``): Can be a comma
       separated list of layouts
 """
@@ -55,7 +56,6 @@ import yaml
 ALPHANUMS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 SALT_LENGTH = 16
 
-# TODO: make template readable
 __ksTemplate = """
 install
 url --url=http://{{ mirror_root }}/releases/{{ release }}/Everything/{{ architecture }}/os/
@@ -101,10 +101,12 @@ clearpart --all --initlabel --drives={{ disk }}
 
 bootloader --location=mbr --boot-drive={{ disk }}
 
+{# TODO: make readable #}
 part /boot --fstype=xfs {% if mode == 'install' %}--recommended{% elif mode == 'upgrade' %} --onpart={{ disk }}1{% endif %}
 part pv.01 {% if mode == 'install' %}--grow{% elif mode == 'upgrade' %} --noformat --onpart={{ disk }}2{% endif %}
 volgroup system {% if mode == 'install' %}pv.01{% elif mode == 'upgrade' %}--useexisting --noformat{% endif %}
 
+{# TODO: make readable #}
 {% for volume, volumedata in volumes.items() %}
 logvol {{ volumedata.mountpoint }} --vgname=system --name={{ volume }} --fstype={{ volumedata.fstype }}
 {%- if mode == 'install' %}{% if volumedata.size == '__recommended__' %} --recommended{% else %} --size={{ volumedata.size }}{% endif %}
@@ -123,6 +125,7 @@ reboot --eject
 @base-x
 @fonts
 
+{# TODO: move this out of the template? #}
 {% if windowmanager == 'xfce' %}
 @xfce-desktop
 @xfce-apps
@@ -221,6 +224,7 @@ def generatePassword(plainPassword):
 
 # TODO multiple configurations in one go
 # TODO document logical volumes
+# TODO: document keymap layouts
 
 if __name__ == '__main__':
     configuration = yaml.load(__configDefaults)
