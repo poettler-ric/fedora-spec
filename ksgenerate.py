@@ -11,6 +11,9 @@ Optinally loads the kickstart template from file.
 Configuration options
 =====================
 
+The configuration is written in yaml and the resulting data structure is
+passed to the template directly.
+
 Mandatory options are **bolt**.
 
 If password options are set to ``__ask__`` the program will interactively
