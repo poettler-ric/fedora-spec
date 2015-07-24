@@ -23,14 +23,12 @@ ask for a password.
 * Architecture (name: ``architecture``, default: ``x86_64``)
 * Root password (name: ``rootpw``, default: ``__ask__``)
 * Disk (name: ``disk``, default: ``sda``)
-* TODO Users
-    * Name
-    * Comment
-    * Password
-        * Option to interactively ask for the password
-    * Primary group
-    * Additional groups
-    * Uid
+* Users (name: ``users``): dictionary of login -> userdata mappings.
+  The userdata itself are dictionaries with the following options:
+    * **Comment** (name: ``gecos``): readable username
+    * **Password** (name: ``password``)
+    * Additional groups (name: ``groups``)
+    * UID (name: ``uid``)
 * Desktop (name: ``windowmanager``): if undefined it will result in a minimal
   configuration. If defined the supported values are:
     * xfce
@@ -72,6 +70,13 @@ timezone {{ timezone }} --utc
 
 authconfig --enableshadow --passalgo=sha512
 rootpw  --iscrypted {{ rootpw }}
+
+{# TODO: make readable #}
+{% if users %}
+{% for user, userdata in users.items() %}
+user --name={{ user }}{% if userdata.uid %} --uid={{ userdata.uid }}{% endif %}{% if userdata.groups %} --groups={{ userdata.groups|join(",") }}{% endif %} --gecos="{{ userdata.gecos }}" --password={{ userdata.password }} --iscrypted
+{% endfor  %}
+{% endif %}
 
 selinux --enforcing
 # enable network service - might not be neccessary for ssh - do it just to be sure
@@ -186,6 +191,13 @@ name: min
 mirror_root: 172.16.254.102/fedora
 release: 22
 timezone: Europe/Vienna
+users:
+    administrator:
+        uid: 1500
+        groups:
+            - wheel
+        gecos: Admin Account
+        password: __ask__
 """.strip()
 #windowmanager: xfce
 
@@ -207,16 +219,13 @@ def generatePassword(plainPassword):
 # TODO multiple configurations in one go
 # TODO document logical volumes
 
-# http://docs.fedoraproject.org/en-US/Fedora/22/html/Installation_Guide/sect-kickstart-commands-user.html
-# --uid
-# --gid
-
 if __name__ == '__main__':
     configuration = yaml.load(__configDefaults)
     configuration.update(yaml.load(__config))
     
     if configuration['rootpw'] == '__ask__':
         configuration['rootpw'] = generatePassword(getpass("root password:"))
+    # TODO handle __ask__ user passwords
     
     template = Template(__ksTemplate)
     
