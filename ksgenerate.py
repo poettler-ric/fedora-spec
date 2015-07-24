@@ -72,7 +72,7 @@ keyboard --vckeymap={{ keymap.vconsole }} --xlayouts={{ keymap.xlayout }}
 timezone {{ timezone }} --utc
 
 authconfig --enableshadow --passalgo=sha512
-rootpw  --iscrypted {{ rootpw }}
+rootpw --iscrypted {{ rootpw }}
 
 {# TODO: make readable #}
 {% if users %}
