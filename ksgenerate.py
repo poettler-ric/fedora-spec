@@ -232,7 +232,11 @@ if __name__ == '__main__':
     
     if configuration['rootpw'] == '__ask__':
         configuration['rootpw'] = generatePassword(getpass("root password:"))
-    # TODO handle __ask__ user passwords
+
+    if configuration['users']:
+        for user, userdata in configuration['users'].items():
+            if userdata['password'] == '__ask__':
+                userdata['password'] = generatePassword(getpass("password for %s:" % user))
     
     template = Template(__ksTemplate)
     
