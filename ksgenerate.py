@@ -40,10 +40,8 @@ ask for a password.
     * kde
     * gnome
 * Keymap
-    * Console (name: ``keymap.vconsole`` default: ``us``)
-    TODO: replace with a list in the yaml configuration:
-    * X-Layout (name: ``keymap.xlayout`` default: ``us``): Can be a comma
-      separated list of layouts
+    * **Console** (name: ``keymap.vconsole`` default: ``us``)
+    * X-Layout (name: ``keymap.xlayout`` default: ``us``): list of layouts
 """
 
 
@@ -68,7 +66,7 @@ text
 # TODO firstboot --enable
 
 lang {{ language }}
-keyboard --vckeymap={{ keymap.vconsole }} --xlayouts={{ keymap.xlayout }}
+keyboard --vckeymap={{ keymap.vconsole }}{% if keymap.xlayout %} --xlayouts={{ keymap.xlayout|join(",") }}{% endif %}
 timezone {{ timezone }} --utc
 
 authconfig --enableshadow --passalgo=sha512
@@ -166,7 +164,8 @@ architecture: x86_64
 language: en_US.UTF-8
 keymap:
     vconsole: us
-    xlayout: us
+    xlayout:
+        - us
 disk: sda
 volumes:
     swap:
