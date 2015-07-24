@@ -40,8 +40,14 @@ ask for a password.
     * kde
     * gnome
 * Keymap
-    * **Console** (name: ``keymap.vconsole`` default: ``us``)
-    * X-Layout (name: ``keymap.xlayout`` default: ``us``): list of layouts
+    * **Console** (name: ``keymap.vconsole`` default: ``us``): Valid names
+      correspond to the list of files in the ``/usr/lib/kbd/keymaps/*``
+      directory, without the ``.map.gz`` extension.
+    * X-Layout (name: ``keymap.xlayout`` default: ``us``): list of layouts.
+      Accepts values in the same format as ``setxkbmap(1)``, either in the
+      ``layout`` format (such as ``cz``), or in the ``layout (variant)``
+      format (such as ``cz (qwerty)``). All available layouts can be
+      viewed on the ``xkeyboard-config(7)`` man page under ``Layouts``.
 """
 
 
@@ -223,7 +229,6 @@ def generatePassword(plainPassword):
 
 # TODO multiple configurations in one go
 # TODO document logical volumes
-# TODO: document keymap layouts
 
 if __name__ == '__main__':
     configuration = yaml.load(__configDefaults)
