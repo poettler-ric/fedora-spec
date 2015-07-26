@@ -1,5 +1,4 @@
 Packages to port:
-* btsync
 * evelink https://github.com/eve-val/evelink
 * beets https://github.com/sampsyo/beets
 
