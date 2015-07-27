@@ -54,6 +54,7 @@ ask for a password.
 from crypt import crypt
 from getpass import getpass
 from jinja2 import Template
+import argparse
 import random
 import yaml
 
@@ -197,38 +198,6 @@ volumes:
         upgrade: --noformat
 """.strip()
 
-# TODO: read __config from a file
-__config = """
-mirror_root: 172.16.254.102/fedora
-timezone: Europe/Vienna
-keymap:
-    vconsole: de-nodeadkeys
-    xlayout:
-        - de
-users:
-    administrator:
-        uid: 1500
-        groups:
-            - wheel
-        gecos: Admin Account
-        password: __ask__
-configurations:
-    min:
-        configurations:
-            _21:
-                release: 21
-            _22:
-                release: 22
-    xfce:
-        windowmanager: xfce
-        configurations:
-            _21:
-                release: 21
-            _22:
-                release: 22
-""".strip()
-
-
 __modes = ('install', 'upgrade')
 
 def generateSalt():
@@ -279,9 +248,17 @@ def writeConfiguration(template, configuration):
         f.write(template.render(configuration))
 
 if __name__ == '__main__':
-    template = Template(__ksTemplate)
-    
-    configuration = yaml.load(__configDefaults)
-    configuration.update(yaml.load(__config))
+    parser = argparse.ArgumentParser(description="Generate kickstart configuration files")
+    parser.add_argument("file",
+        nargs='+',
+        help="configuration file for the generation")
+    args = parser.parse_args()
 
-    generateConfiguration(template, configuration)
+    template = Template(__ksTemplate)
+    configuration = yaml.load(__configDefaults)
+
+    for f in args.file:
+        c = configuration.copy()
+        with open(f) as s:
+            c.update(yaml.load(s))
+        generateConfiguration(template, c)
