@@ -203,7 +203,8 @@ mirror_root: 172.16.254.102/fedora
 timezone: Europe/Vienna
 keymap:
     vconsole: de-nodeadkeys
-    xlayout: de
+    xlayout:
+        - de
 users:
     administrator:
         uid: 1500
