@@ -199,9 +199,7 @@ volumes:
 
 # TODO: read __config from a file
 __config = """
-name: min
 mirror_root: 172.16.254.102/fedora
-release: 22
 timezone: Europe/Vienna
 keymap:
     vconsole: de-nodeadkeys
@@ -213,8 +211,22 @@ users:
             - wheel
         gecos: Admin Account
         password: __ask__
+configurations:
+    min:
+        configurations:
+            _21:
+                release: 21
+            _22:
+                release: 22
+    xfce:
+        windowmanager: xfce
+        configurations:
+            _21:
+                release: 21
+            _22:
+                release: 22
 """.strip()
-#windowmanager: xfce
+
 
 __modes = ('install', 'upgrade')
 
@@ -226,14 +238,11 @@ def generatePassword(plainPassword):
     """Generate a password to put into ``/etc/shadow``."""
     return crypt(plainPassword, "$6$%s" % generateSalt())
 
-
-# TODO multiple configurations in one go
 # TODO document logical volumes
 
-if __name__ == '__main__':
-    configuration = yaml.load(__configDefaults)
-    configuration.update(yaml.load(__config))
-    
+def generateConfiguration(template, configuration):
+    # TODO document recursive/inherited configurations
+    print("= configuring %s" % configuration.get('name', "defaults"))
     if configuration['rootpw'] == '__ask__':
         configuration['rootpw'] = generatePassword(getpass("root password:"))
 
@@ -241,13 +250,37 @@ if __name__ == '__main__':
         for user, userdata in configuration['users'].items():
             if userdata['password'] == '__ask__':
                 userdata['password'] = generatePassword(getpass("password for %s:" % user))
-    
+
+    # if there are multiple configurations defined interate down the tree
+    if 'configurations' in configuration:
+        for configName, configData in configuration['configurations'].items():
+            c = configuration.copy()
+            del c['configurations']
+
+            # if the configuration name starts with '_' inherit the name of the parent
+            if configName.startswith('_'):
+                c['name'] = configuration['name']
+            else:
+                c['name'] = configName
+
+            c.update(configData)
+            generateConfiguration(template, c)
+    else:
+        for mode in __modes:
+            configuration['mode'] = mode
+            writeConfiguration(template, configuration)
+
+def writeConfiguration(template, configuration):
+    # TODO document naming scheme
+    filename = '{mode}-{release}-{name}.cfg'.format(**configuration)
+    with open(filename, 'w') as f:
+        print("= writing %s" % filename)
+        f.write(template.render(configuration))
+
+if __name__ == '__main__':
     template = Template(__ksTemplate)
     
-    for mode in __modes:
-        configuration['mode'] = mode
-        # TODO document naming scheme
-        filename = '{mode}-{release}-{name}.cfg'.format(**configuration)
-        with open(filename, 'w') as f:
-            print("writing %s" % filename)
-            f.write(template.render(configuration))
+    configuration = yaml.load(__configDefaults)
+    configuration.update(yaml.load(__config))
+
+    generateConfiguration(template, configuration)
