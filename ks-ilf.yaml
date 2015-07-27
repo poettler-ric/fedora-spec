@@ -1,0 +1,18 @@
+release: 22
+timezone: Europe/Vienna
+mirror_root: atibksdb010/fedora
+keymap:
+    vconsole: de-nodeadkeys
+    xlayout:
+        - de
+users:
+    admin:
+        gecos: Admin Account
+        password: __ask__
+        groups:
+            - wheel
+configurations:
+    min:
+        {}
+    xfce:
+        windowmanager: xfce

@@ -1,0 +1,22 @@
+timezone: Europe/Vienna
+mirror_root: 172.16.254.102/fedora
+users:
+    richi:
+        gecos: Richard Poettler
+        password: __ask__
+        groups:
+            - wheel
+configurations:
+    min:
+        configurations:
+            _21:
+                release: 21
+            _22:
+                release: 22
+    xfce:
+        windowmanager: xfce
+        configurations:
+            _21:
+                release: 21
+            _22:
+                release: 22

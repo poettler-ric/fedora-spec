@@ -1,0 +1,4 @@
+name: minimal
+release: 22
+timezone: Europe/Vienna
+mirror_root: ftp.halifax.rwth-aachen.de/fedora/linux
