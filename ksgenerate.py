@@ -247,7 +247,7 @@ def generateConfiguration(template, configuration):
     if configuration['rootpw'] == '__ask__':
         configuration['rootpw'] = generatePassword(getpass("root password:"))
 
-    if configuration['users']:
+    if 'users' in configuration:
         for user, userdata in configuration['users'].items():
             if userdata['password'] == '__ask__':
                 userdata['password'] = generatePassword(getpass("password for %s:" % user))
