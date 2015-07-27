@@ -197,6 +197,7 @@ volumes:
         upgrade: --noformat
 """.strip()
 
+# TODO: read __config from a file
 __config = """
 name: min
 mirror_root: 172.16.254.102/fedora
