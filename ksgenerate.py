@@ -203,6 +203,9 @@ name: min
 mirror_root: 172.16.254.102/fedora
 release: 22
 timezone: Europe/Vienna
+keymap:
+    vconsole: de-nodeadkeys
+    xlayout: de
 users:
     administrator:
         uid: 1500
@@ -222,10 +225,6 @@ def generateSalt():
 def generatePassword(plainPassword):
     """Generate a password to put into ``/etc/shadow``."""
     return crypt(plainPassword, "$6$%s" % generateSalt())
-
-#keymap:
-#    vconsole: de-nodeadkeys
-#    xlayout: de
 
 
 # TODO multiple configurations in one go
