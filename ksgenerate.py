@@ -274,8 +274,8 @@ def generateConfiguration(template, configuration):
 def writeConfiguration(template, configuration):
     # TODO document naming scheme
     filename = '{mode}-{release}-{name}.cfg'.format(**configuration)
+    print("= writing %s" % filename)
     with open(filename, 'w') as f:
-        print("= writing %s" % filename)
         f.write(template.render(configuration))
 
 if __name__ == '__main__':
