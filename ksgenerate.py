@@ -32,6 +32,9 @@ ask for a password.
     * **Password** (name: ``users.<login>.password``)
     * Additional groups (name: ``users.<login>.groups``)
     * UID (name: ``users.<login>.uid``)
+* Updates for volumelayout (name: ``update_volumes``): Updates the given
+  logical volumes with the entries given in the dictionary (specifying
+  ``volumes`` would replace **all** volumes).
 * Desktop (name: ``windowmanager``): if undefined it will result in a minimal
   configuration. If defined the supported values are:
     * xfce
@@ -114,7 +117,7 @@ volgroup system {% if mode == 'install' %}pv.01{% elif mode == 'upgrade' %}--use
 {# TODO: make readable #}
 {% for volume, volumedata in volumes.items() %}
 logvol {{ volumedata.mountpoint }} --vgname=system --name={{ volume }} --fstype={{ volumedata.fstype }}
-{%- if mode == 'install' %}{% if volumedata.size == '__recommended__' %} --recommended{% else %} --size={{ volumedata.size }}{% endif %}
+{%- if mode == 'install' %}{% if volumedata.size == '__recommended__' %} --recommended{% elif volumedata.size == '__hibernation__' %} --hibernation{% else %} --size={{ volumedata.size }}{% endif %}
 {% elif mode == 'upgrade' %} --useexisting{% if volumedata.upgrade %} {{ volumedata.upgrade }}{% endif %}
 {% endif %}
 {%- endfor %}
@@ -235,6 +238,11 @@ def generateConfiguration(template, configuration):
                 c['name'] = configName
 
             c.update(configData)
+
+            if 'update_volumes' in configData:
+                c['volumes'].update(configData['update_volumes'])
+                del configData['update_volumes']
+
             generateConfiguration(template, c)
     else:
         for mode in __modes:
