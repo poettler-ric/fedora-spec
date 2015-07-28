@@ -228,6 +228,9 @@ def generateConfiguration(template, configuration):
     if 'configurations' in configuration:
         for configName, configData in configuration['configurations'].items():
             c = configuration.copy()
+            if 'volumes' in configuration:
+                c['volumes'] = configuration['volumes'].copy()
+
             del c['configurations']
 
             # if the configuration name starts with '_' inherit the name of the parent
