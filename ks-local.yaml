@@ -20,3 +20,19 @@ configurations:
                 release: 21
             _22:
                 release: 22
+    laptop:
+        keymap:
+            vconsole: de-nodeadkeys
+            xlayout:
+                - de
+        windowmanager: xfce
+        update_volumes:
+            swap:
+                mountpoint: swap
+                fstype: swap
+                size: __hibernation__
+        configurations:
+            _21:
+                release: 21
+            _22:
+                release: 22
