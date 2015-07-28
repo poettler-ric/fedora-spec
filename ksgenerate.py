@@ -228,6 +228,7 @@ def generateConfiguration(template, configuration):
             del c['configurations']
 
             # if the configuration name starts with '_' inherit the name of the parent
+            # TODO: extend configuration names? parent name: "test" child "+-xfce" -> "test-xfce"
             if configName.startswith('_'):
                 c['name'] = configuration['name']
             else:
