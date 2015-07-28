@@ -26,6 +26,8 @@ configurations:
             xlayout:
                 - de
         windowmanager: xfce
+        packages:
+            - "@hardware-support"
         update_volumes:
             swap:
                 mountpoint: swap
