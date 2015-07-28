@@ -43,7 +43,7 @@ ask for a password.
     * kde
     * gnome
 * Keymap
-    * **Console** (name: ``keymap.vconsole`` default: ``us``): Valid names
+    * Console (name: ``keymap.vconsole`` default: ``us``): Valid names
       correspond to the list of files in the ``/usr/lib/kbd/keymaps/*``
       directory, without the ``.map.gz`` extension.
     * X-Layout (name: ``keymap.xlayout`` default: ``us``): list of layouts.
