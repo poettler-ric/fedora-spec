@@ -117,7 +117,7 @@ volgroup system {% if mode == 'install' %}pv.01{% elif mode == 'upgrade' %}--use
 {# TODO: make readable #}
 {% for volume, volumedata in volumes.items() %}
 logvol {{ volumedata.mountpoint }} --vgname=system --name={{ volume }} --fstype={{ volumedata.fstype }}
-{%- if mode == 'install' %}{% if volumedata.size == '__recommended__' %} --recommended{% elif volumedata.size == '__hibernation__' %} --hibernation{% else %} --size={{ volumedata.size }}{% endif %}
+{%- if mode == 'install' %}{% if volumedata.size == '__recommended__' %} --recommended{% elif volumedata.size == '__hibernation__' %} --recommended --hibernation{% else %} --size={{ volumedata.size }}{% endif %}
 {% elif mode == 'upgrade' %} --useexisting{% if volumedata.upgrade %} {{ volumedata.upgrade }}{% endif %}
 {% endif %}
 {%- endfor %}
