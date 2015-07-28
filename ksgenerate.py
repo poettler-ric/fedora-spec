@@ -51,6 +51,9 @@ ask for a password.
       ``layout`` format (such as ``cz``), or in the ``layout (variant)``
       format (such as ``cz (qwerty)``). All available layouts can be
       viewed on the ``xkeyboard-config(7)`` man page under ``Layouts``.
+* Additional packages (name: ``packages``): List of additional packages
+  to install. Groups are prefixed with ``@`` and enclodes with ``"``
+  (e.g. ``"@hardware-support"``).
 """
 
 
@@ -164,6 +167,10 @@ reboot --eject
 #@gnome-software-development
 {% endif %}
 {% endif  %}
+
+{% for p in packages %}
+{{ p }}
+{% endfor %}
 
 %end
 """.strip()
