@@ -18,7 +18,6 @@ URL:            https://github.com/DarkFenX/Pyfa
 Source0:        %{name}-%{version}.tar.gz
 Source1:        pyfa.desktop
 Patch0:         add-usr-share-pyfa-to-python-searchpath.patch
-Patch1:         fixed-eos-path-for-eve.db.patch
 
 BuildRequires:  python2-devel
 BuildRequires:  desktop-file-utils
@@ -40,7 +39,6 @@ possible combination of modules, fits, etc.
 %setup -q -n Pyfa-%{version}
 
 %patch0 -p1
-%patch1 -p1
 
 
 %build
