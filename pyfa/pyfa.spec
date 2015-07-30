@@ -6,6 +6,13 @@
 # $ curl -o pyfa-${VERSION}.tar.gz \
 # >     https://codeload.github.com/DarkFenX/Pyfa/tar.gz/v${VERSION}
 #
+# How to generate the wx3 patch (replace v... with the actual release tag)
+# git diff v1.13.2 origin/wx3 |filterdiff >../wx3.patch
+# git checkout -b packaging v1.13.2
+# patch -p1 <../wx3.patch
+# git add .
+# git commit -m "applied wx3.patch"
+# ... recreate the add-user-share...patch
 
 Name:           pyfa
 Version:        1.13.2
@@ -18,6 +25,8 @@ URL:            https://github.com/DarkFenX/Pyfa
 Source0:        %{name}-%{version}.tar.gz
 Source1:        pyfa.desktop
 Patch0:         add-usr-share-pyfa-to-python-searchpath.patch
+Patch1:         wx3.patch
+Patch2:         add-usr-share-pyfa-to-python-searchpath-wx3.patch
 
 BuildRequires:  python2-devel
 BuildRequires:  desktop-file-utils
@@ -38,7 +47,12 @@ possible combination of modules, fits, etc.
 %prep
 %setup -q -n Pyfa-%{version}
 
+%if 0%{?fedora} <= 21
 %patch0 -p1
+%else
+%patch1 -p1
+%patch2 -p1
+%endif
 
 
 %build
