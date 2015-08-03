@@ -36,7 +36,7 @@ make %{?_smp_mflags}
 
 %files
 %defattr(-,root,root)
-%config(noreplace) %attr(600, btsync, btsync) %{_sysconfdir}/ntpd.conf
+%config(noreplace) %{_sysconfdir}/ntpd.conf
 %{_sbindir}/*
 %doc %{_mandir}
 
