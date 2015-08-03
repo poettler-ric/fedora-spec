@@ -1,8 +1,9 @@
 # FIXME: conflict with ntp package ->rename files to open*
 # TODO: service file
-# TODO: create users
-# groupadd _ntp
-# useradd -g _ntp -s /sbin/nologin -d /var/empty -c 'OpenNTP daemon' _ntp
+
+%define ntp_user _ntp
+%define ntp_group _ntp
+
 Name:           openntpd
 Version:        5.7p4
 Release:        1%{?dist}
@@ -14,7 +15,7 @@ URL:            http://www.openntpd.org/
 Source0:        http://ftp2.eu.openbsd.org/pub/OpenBSD/OpenNTPD/%{name}-%{version}.tar.gz
 
 #BuildRequires:  
-#Requires:       
+Requires(pre):          shadow-utils
 
 %description
 OpenNTPD is a FREE, easy to use implementation of the Network Time Protocol. It
@@ -33,6 +34,16 @@ make %{?_smp_mflags}
 
 %install
 %make_install
+
+
+%pre
+# TODO: maybe use the users from the ntp package?
+# Problem: wrong home directory?
+getent group %{ntp_group} >/dev/null || groupadd -r %{ntp_group}
+getent passwd %{ntp_user} >/dev/null || \
+    useradd -r -g %{ntp_group} -d /var/empty -s /sbin/nologin \
+    -c "OpenNTP daemon" -m %{ntp_user}
+exit 0
 
 
 %files
