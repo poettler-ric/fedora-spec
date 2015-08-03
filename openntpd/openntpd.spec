@@ -1,3 +1,4 @@
+# FIXME: conflict with ntp package ->rename files to open*
 # TODO: service file
 # TODO: create users
 # groupadd _ntp
