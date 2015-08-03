@@ -1,5 +1,4 @@
 # FIXME: conflict with ntp package ->rename files to open*
-# TODO: service file
 
 %define ntp_user _ntp
 %define ntp_group _ntp
@@ -13,9 +12,13 @@ Group:          -
 License:        ISC
 URL:            http://www.openntpd.org/
 Source0:        http://ftp2.eu.openbsd.org/pub/OpenBSD/OpenNTPD/%{name}-%{version}.tar.gz
+Source1:        openntpd.service
 
-#BuildRequires:  
+BuildRequires:          systemd
 Requires(pre):          shadow-utils
+Requires(post):         systemd
+Requires(preun):        systemd
+Requires(postun):       systemd
 
 %description
 OpenNTPD is a FREE, easy to use implementation of the Network Time Protocol. It
@@ -35,6 +38,9 @@ make %{?_smp_mflags}
 %install
 %make_install
 
+# install service file
+install -D -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_unitdir}/openntpd.service
+
 
 %pre
 # TODO: maybe use the users from the ntp package?
@@ -46,10 +52,23 @@ getent passwd %{ntp_user} >/dev/null || \
 exit 0
 
 
+%post
+%systemd_post openntpd.service
+
+
+%preun
+%systemd_preun openntpd.service
+
+
+%postun
+%systemd_postun_with_restart openntpd.service
+
+
 %files
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/ntpd.conf
 %{_sbindir}/*
+%{_unitdir}/openntpd.service
 %doc %{_mandir}
 
 
