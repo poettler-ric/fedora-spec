@@ -1,4 +1,11 @@
 # FIXME: conflict with ntp package ->rename files to open*
+#       using the same name as ntp might cause selinux to put openntpd into a
+#       selinxu context and block the start of the process if selinux is set to
+#       enforcing
+#       tasks:
+#       * prefix binaries (when installing them)
+#       * patch the man page contents to the new commands
+#       * prefix the man pages (when installing them)
 
 %define ntp_user _ntp
 %define ntp_group _ntp
