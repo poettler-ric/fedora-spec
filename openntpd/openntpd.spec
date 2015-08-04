@@ -1,8 +1,8 @@
 # TODO: add docs section to the spec file (see: systemctl status sshd)
 # FIXME: "constraint certificate verification turned off"
 
-%define ntp_user _ntp
-%define ntp_group _ntp
+%define ntpd_user openntpd
+%define ntpd_group openntpd
 
 Name:           openntpd
 Version:        5.7p4
@@ -37,7 +37,7 @@ sed -i "s@\.Nm ntpd@.Nm openntpd@g" src/ntpd.8
 
 
 %build
-%configure
+%configure --with-privsep-user=%{ntpd_user}
 make %{?_smp_mflags}
 
 
@@ -55,12 +55,10 @@ popd
 
 
 %pre
-# TODO: maybe use the users from the ntp package?
-# Problem: wrong home directory?
-getent group %{ntp_group} >/dev/null || groupadd -r %{ntp_group}
-getent passwd %{ntp_user} >/dev/null || \
-    useradd -r -g %{ntp_group} -d /var/empty -s /sbin/nologin \
-    -c "OpenNTP daemon" -m %{ntp_user}
+getent group %{ntpd_group} >/dev/null || groupadd -r %{ntpd_group}
+getent passwd %{ntpd_user} >/dev/null || \
+    useradd -r -g %{ntpd_group} -d /var/empty -s /sbin/nologin \
+    -c "OpenNTP daemon" -m %{ntpd_user}
 exit 0
 
 
