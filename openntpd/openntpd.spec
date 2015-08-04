@@ -1,4 +1,3 @@
-# TODO: add docs section to the spec file (see: systemctl status sshd)
 # FIXME: "constraint certificate verification turned off"
 
 %define ntpd_user openntpd

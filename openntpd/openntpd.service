@@ -1,5 +1,6 @@
 [Unit]
 Description=OpenNTP daemon
+Documentation=man:openntpd(8) man:ntpd.conf(5)
 After=network.target
  
 [Service]
