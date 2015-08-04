@@ -1,11 +1,3 @@
-# FIXME: conflict with ntp package ->rename files to open*
-#       using the same name as ntp might cause selinux to put openntpd into a
-#       selinxu context and block the start of the process if selinux is set to
-#       enforcing
-#       tasks:
-#       * prefix binaries (when installing them)
-#       * patch the man page contents to the new commands
-#       * prefix the man pages (when installing them)
 # TODO: add docs section to the spec file (see: systemctl status sshd)
 # FIXME: "constraint certificate verification turned off"
 
@@ -38,6 +30,11 @@ as NTP server itself, redistributing the local clock.
 %prep
 %setup -q
 
+# patch the man pages for the ntpd -> openntpd change
+sed -i "s@\.Xr ntpd 8@.Xr openntpd 8@g" src/*.5 src/*.8
+sed -i "s@\.Dt NTPD 8@.Dt OPENNTPD 8@g" src/ntpd.8
+sed -i "s@\.Nm ntpd@.Nm openntpd@g" src/ntpd.8
+
 
 %build
 %configure
@@ -49,6 +46,12 @@ make %{?_smp_mflags}
 
 # install service file
 install -D -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_unitdir}/openntpd.service
+
+# move the binary and man page for the ntpd -> openntpd change
+pushd $RPM_BUILD_ROOT
+mv .%{_sbindir}/{,open}ntpd
+mv .%{_mandir}/man8/{,open}ntpd.8
+popd
 
 
 %pre

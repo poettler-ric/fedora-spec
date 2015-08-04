@@ -4,7 +4,7 @@ After=network.target
  
 [Service]
 Type=forking
-ExecStart=/usr/sbin/ntpd
+ExecStart=/usr/sbin/openntpd
 
 [Install]
 WantedBy=multi-user.target
