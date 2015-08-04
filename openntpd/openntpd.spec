@@ -7,6 +7,7 @@
 #       * patch the man page contents to the new commands
 #       * prefix the man pages (when installing them)
 # TODO: add docs section to the spec file (see: systemctl status sshd)
+# FIXME: "constraint certificate verification turned off"
 
 %define ntp_user _ntp
 %define ntp_group _ntp
