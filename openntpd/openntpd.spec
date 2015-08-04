@@ -17,7 +17,7 @@ Release:        1%{?dist}
 Summary:        free and easy to use implementation of the network time protocol
 
 Group:          -
-License:        ISC
+License:        BSD
 URL:            http://www.openntpd.org/
 Source0:        http://ftp2.eu.openbsd.org/pub/OpenBSD/OpenNTPD/%{name}-%{version}.tar.gz
 Source1:        openntpd.service
