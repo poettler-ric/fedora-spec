@@ -66,6 +66,7 @@ import string
 import yaml
 
 SALT_LENGTH = 16
+RANDOM_PASSWORD_LENGTH = 32
 
 __ksTemplate = """
 install
@@ -219,6 +220,13 @@ def generateSalt(length=SALT_LENGTH):
 def generatePassword(plainPassword):
     """Generate a password to put into ``/etc/shadow``."""
     return crypt(plainPassword, "$6$%s" % generateSalt())
+
+def generateRandomPassword(length=RANDOM_PASSWORD_LENGTH):
+    """Generate a random password with upper and lowercase letters and
+    digits."""
+    return generatePassword(
+        ''.join(random.SystemRandom().choice(string.letters + string.digits)
+            for i in range(length)))
 
 # TODO document logical volumes
 
