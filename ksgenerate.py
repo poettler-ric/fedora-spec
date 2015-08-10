@@ -62,9 +62,9 @@ from getpass import getpass
 from jinja2 import Template
 import argparse
 import random
+import string
 import yaml
 
-ALPHANUMS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 SALT_LENGTH = 16
 
 __ksTemplate = """
@@ -212,7 +212,8 @@ __modes = ('install', 'upgrade')
 
 def generateSalt():
     """Generate a random salt of ``SALT_LENGTH`` alphanumerical characters."""
-    return ''.join(random.SystemRandom().choice(ALPHANUMS)
+    return ''.join(random.SystemRandom().choice(
+            string.ascii_letters + string.digits)
         for i in range(SALT_LENGTH))
     
 def generatePassword(plainPassword):
