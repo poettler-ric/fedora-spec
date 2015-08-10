@@ -212,7 +212,8 @@ __modes = ('install', 'upgrade')
 
 def generateSalt():
     """Generate a random salt of ``SALT_LENGTH`` alphanumerical characters."""
-    return ''.join(random.choice(ALPHANUMS) for i in range(SALT_LENGTH))
+    return ''.join(random.SystemRandom().choice(ALPHANUMS)
+        for i in range(SALT_LENGTH))
     
 def generatePassword(plainPassword):
     """Generate a password to put into ``/etc/shadow``."""
