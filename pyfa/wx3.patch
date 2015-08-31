@@ -1,17 +1,28 @@
 diff --git a/config.py b/config.py
-index f1b8bcb..614aa90 100644
+index 5f19bb7..ebf698a 100644
 --- a/config.py
 +++ b/config.py
-@@ -32,6 +32,19 @@ staticPath = None
- saveDB = None
- gameDB = None
+@@ -17,11 +17,6 @@ debug = False
+ # Defines if our saveddata will be in pyfa root or not
+ saveInRoot = False
+ 
+-if debug:
+-    logLevel = logging.DEBUG
+-else:
+-    logLevel = logging.WARN
+-
+ # Version data
+ version = "1.14.0"
+ tag = "Stable"
+@@ -50,23 +45,41 @@ class StreamToLogger(object):
+       for line in buf.rstrip().splitlines():
+          self.logger.log(self.log_level, line.rstrip())
  
 +def isFrozen():
 +    if hasattr(sys, 'frozen'):
 +        return True
 +    else:
 +        return False
-+
 +
 +def getPyfaRoot():
 +    base = sys.executable if isFrozen() else sys.argv[0]
@@ -22,7 +33,22 @@ index f1b8bcb..614aa90 100644
  def __createDirs(path):
      if not os.path.exists(path):
          os.makedirs(path)
-@@ -47,8 +60,7 @@ def defPaths():
+ 
+ def defPaths():
++    global debug
+     global pyfaPath
+     global savePath
+     global staticPath
+     global saveDB
+     global gameDB
+     global saveInRoot
++
++    if debug:
++        logLevel = logging.DEBUG
++    else:
++        logLevel = logging.WARN
++
+     # The main pyfa directory which contains run.py
      # Python 2.X uses ANSI by default, so we need to convert the character encoding
      pyfaPath = getattr(configforced, "pyfaPath", pyfaPath)
      if pyfaPath is None:
@@ -32,22 +58,99 @@ index f1b8bcb..614aa90 100644
  
      # Where we store the saved fits etc, default is the current users home directory
      if saveInRoot is True:
-@@ -74,11 +86,15 @@ def defPaths():
+@@ -95,9 +108,11 @@ def defPaths():
+         sl = StreamToLogger(stdout_logger, logging.INFO)
+         sys.stdout = sl
  
-     # Redirect stderr to file if we're requested to do so
-     stderrToFile = getattr(configforced, "stderrToFile", None)
-+    if stderrToFile is None:
-+        stderrToFile = True if isFrozen() else False
-     if stderrToFile is True:
-         sys.stderr = open(os.path.join(savePath, "error_log.txt"), "w")
+-        stderr_logger = logging.getLogger('STDERR')
+-        sl = StreamToLogger(stderr_logger, logging.ERROR)
+-        sys.stderr = sl
++        # This interferes with cx_Freeze's own handling of exceptions. Find a way to fix this.
++        #stderr_logger = logging.getLogger('STDERR')
++        #sl = StreamToLogger(stderr_logger, logging.ERROR)
++        #sys.stderr = sl
++
  
-     # Same for stdout
-     stdoutToFile = getattr(configforced, "stdoutToFile", None)
-+    if stdoutToFile is None:
-+        stdoutToFile = True if isFrozen() else False
-     if stdoutToFile is True:
-         sys.stdout = open(os.path.join(savePath, "output_log.txt"), "w")
+     # Static EVE Data from the staticdata repository, should be in the staticdata
+     # directory in our pyfa directory
+diff --git a/eos/db/migration.py b/eos/db/migration.py
+index b04df38..dcf8636 100644
+--- a/eos/db/migration.py
++++ b/eos/db/migration.py
+@@ -3,17 +3,7 @@ import shutil
+ import time
+ import re
+ import os
+-
+-def getAppVersion():
+-    # calculate app version based on upgrade files we have
+-    appVersion = 0
+-    for fname in os.listdir(os.path.join(os.path.dirname(__file__), "migrations")):
+-        m = re.match("^upgrade(?P<index>\d+)\.py$", fname)
+-        if not m:
+-            continue
+-        index = int(m.group("index"))
+-        appVersion = max(appVersion, index)
+-    return appVersion
++import migrations
  
+ def getVersion(db):
+     cursor = db.execute('PRAGMA user_version')
+@@ -21,7 +11,7 @@ def getVersion(db):
+ 
+ def update(saveddata_engine):
+     dbVersion = getVersion(saveddata_engine)
+-    appVersion = getAppVersion()
++    appVersion = migrations.appVersion
+ 
+     if dbVersion == appVersion:
+         return
+@@ -37,10 +27,11 @@ def update(saveddata_engine):
+         shutil.copyfile(config.saveDB, toFile)
+ 
+         for version in xrange(dbVersion, appVersion):
+-            module = __import__("eos.db.migrations.upgrade{}".format(version + 1), fromlist=True)
+-            upgrade = getattr(module, "upgrade", False)
+-            if upgrade:
+-                upgrade(saveddata_engine)
++
++            func = migrations.updates[version+1]
++            if func:
++                print "applying update",version+1
++                func(saveddata_engine)
+ 
+         # when all is said and done, set version to current
+         saveddata_engine.execute("PRAGMA user_version = {}".format(appVersion))
+diff --git a/eos/db/migrations/__init__.py b/eos/db/migrations/__init__.py
+index 16c9398..87988fb 100644
+--- a/eos/db/migrations/__init__.py
++++ b/eos/db/migrations/__init__.py
+@@ -7,3 +7,25 @@ define an upgrade() function with the logic. Please note that there must be as
+ many upgrade files as there are database versions (version 5 would include
+ upgrade files 1-5)
+ """
++
++import pkgutil
++import re
++
++
++updates = {}
++appVersion = 0
++
++prefix = __name__ + "."
++for importer, modname, ispkg in pkgutil.iter_modules(__path__, prefix):
++    # loop through python files, extracting update number and function, and
++    # adding it to a list
++    modname_tail = modname.rsplit('.', 1)[-1]
++    module = __import__(modname, fromlist=True)
++    m = re.match("^upgrade(?P<index>\d+)$", modname_tail)
++    if not m:
++        continue
++    index = int(m.group("index"))
++    appVersion = max(appVersion, index)
++    upgrade = getattr(module, "upgrade", False)
++    if upgrade:
++        updates[index] = upgrade
 diff --git a/gui/PFSearchBox.py b/gui/PFSearchBox.py
 index 262d957..c09d7b9 100644
 --- a/gui/PFSearchBox.py
@@ -144,7 +247,7 @@ index a354243..2b0d94b 100644
          sizerResistances.Add(self.stEHPs, wx.GBPosition( row, col ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER)
          col=0
 diff --git a/gui/builtinStatsViews/targetingMiscViewFull.py b/gui/builtinStatsViews/targetingMiscViewFull.py
-index fc26733..ac0fc79 100644
+index afb97fd..7142943 100644
 --- a/gui/builtinStatsViews/targetingMiscViewFull.py
 +++ b/gui/builtinStatsViews/targetingMiscViewFull.py
 @@ -52,7 +52,7 @@ class TargetingMiscViewFull(StatsView):
@@ -247,7 +350,7 @@ index f036313..55fa8d4 100644
          self.navSizer.Layout()
          selection = self.skillTreeChoice.GetCurrentSelection()
 diff --git a/gui/chromeTabs.py b/gui/chromeTabs.py
-index 3a0c7b1..e6b2482 100644
+index 3a0c7b1..8e4c07a 100644
 --- a/gui/chromeTabs.py
 +++ b/gui/chromeTabs.py
 @@ -21,6 +21,7 @@ import wx
@@ -276,6 +379,21 @@ index 3a0c7b1..e6b2482 100644
  
          self.tabs = []
          width, height = size
+@@ -1073,13 +1076,12 @@ class PFTabsContainer(wx.Panel):
+ 
+         selected = 0
+ 
+-        if 'wxMac' in wx.PlatformInfo:
++        if 'wxMac' in wx.PlatformInfo and wx.VERSION < (3,0):
+             color = wx.Colour(0, 0, 0)
+             brush = wx.Brush(color)
+ 
+             from Carbon.Appearance import kThemeBrushDialogBackgroundActive
+             brush.MacSetTheme(kThemeBrushDialogBackgroundActive)
+-
+         else:
+             color = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
+             brush = wx.Brush(color)
 diff --git a/gui/mainFrame.py b/gui/mainFrame.py
 index 83bff35..6f89df0 100644
 --- a/gui/mainFrame.py
@@ -781,57 +899,75 @@ index 08f858f..eb2dd95 100644
  
  if 'wxMac' in wx.PlatformInfo:
 diff --git a/pyfa.py b/pyfa.py
-index 76b7ca3..3e6b77e 100755
+index 76b7ca3..8189918 100755
 --- a/pyfa.py
 +++ b/pyfa.py
-@@ -20,6 +20,7 @@
+@@ -20,6 +20,19 @@
  
  import sys
  import re
 +import config
++
++
++from optparse import OptionParser
++
++# Parse command line options
++usage = "usage: %prog [--root]"
++parser = OptionParser(usage=usage)
++parser.add_option("-r", "--root", action="store_true", dest="rootsavedata", help="if you want pyfa to store its data in root folder, use this option", default=False)
++parser.add_option("-w", "--wx28", action="store_true", dest="force28", help="Force usage of wxPython 2.8", default=False)
++parser.add_option("-d", "--debug", action="store_true", dest="debug", help="Set logger to debug level.", default=False)
++
++(options, args) = parser.parse_args()
  
  if not hasattr(sys, 'frozen'):
  
-@@ -30,18 +31,27 @@ if not hasattr(sys, 'frozen'):
+@@ -30,18 +43,17 @@ if not hasattr(sys, 'frozen'):
      try:
          import wxversion
      except ImportError:
 -        print("Cannot find wxPython\nYou can download wxPython (2.8) from http://www.wxpython.org/")
 +        print("Cannot find wxPython\nYou can download wxPython (2.8+) from http://www.wxpython.org/")
          sys.exit(1)
-+    
-+    # if user wants to force 2.8, try that and go directly to ensureMinimal path if fails
++
      try:
 -        wxversion.select('2.8')
-+        if getattr(config.configforced, "force28", False):
-+            wxversion.select('2.8')
-+        else:
-+            # try 3.0, then 2.8. If any exceptions, go to ensureMinimal path
-+            try:
-+                wxversion.select('3.0')
-+            except:
-+                wxversion.select('2.9')
-     except wxversion.VersionError:
-         try:
-             wxversion.ensureMinimal('2.8')
-         except wxversion.VersionError:
+-    except wxversion.VersionError:
+-        try:
+-            wxversion.ensureMinimal('2.8')
+-        except wxversion.VersionError:
 -            print("Installed wxPython version doesn't meet requirements.\nYou can download wxPython (2.8) from http://www.wxpython.org/")
-+            print "Installed wxPython version doesn't meet requirements.\nYou can download wxPython (2.8+) from http://www.wxpython.org/"
-             sys.exit(1)
+-            sys.exit(1)
++        if options.force28 is True:
++            wxversion.select('2.8')
          else:
 -            print("wxPython 2.8 not found; attempting to use newer version, expect errors")
-+            print "wxPython 2.8 not found; attempting to use newer version, expect errors"        
++            wxversion.select('3.0')
++    except wxversion.VersionError:
++        print "Installed wxPython version doesn't meet requirements.\nYou can download wxPython 2.8 or 3.0 from http://www.wxpython.org/"
++        sys.exit(1)
  
      try:
          import sqlalchemy
-@@ -72,12 +82,15 @@ if __name__ == "__main__":
-     parser.add_option("-r", "--root", action="store_true", dest="rootsavedata", help="if you want pyfa to store its data in root folder, use this option", default=False)
-     (options, args) = parser.parse_args()
+@@ -63,21 +75,19 @@ if not hasattr(sys, 'frozen'):
+         print("Cannot find sqlalchemy.\nYou can download sqlalchemy (0.6+) from http://www.sqlalchemy.org/")
+         sys.exit(1)
  
+-from optparse import OptionParser
+ 
+ if __name__ == "__main__":
+-    # Parse command line options
+-    usage = "usage: %prog [--root]"
+-    parser = OptionParser(usage=usage)
+-    parser.add_option("-r", "--root", action="store_true", dest="rootsavedata", help="if you want pyfa to store its data in root folder, use this option", default=False)
+-    (options, args) = parser.parse_args()
+-
 -    import config
      # Configure paths
      if options.rootsavedata is True:
          config.saveInRoot = True
++
++    config.debug = options.debug
      config.defPaths()
  
 +    # Basic logging initialization
@@ -841,6 +977,266 @@ index 76b7ca3..3e6b77e 100755
      # Import everything
      import wx
      import os
+diff --git a/scripts/dist.py b/scripts/dist.py
+index 8fe6322..45ed7e4 100755
+--- a/scripts/dist.py
++++ b/scripts/dist.py
+@@ -4,18 +4,26 @@ Script for generating distributables based on platform skeletons.
+ 
+ User supplies path for pyfa code base, root skeleton directory, and where the
+ builds go. The builds are automatically named depending on the pyfa config
+-values of `version` and `tag`. If it's a Stable release, the naming convention is:
++values of `version` and `tag`. If it's a Stable release, the naming
++convention is:
++
+     pyfa-pyfaversion-expansion-expversion-platform
+-If it is not Stable (tag=git), we determine if the pyfa code base includes the
+-git repo to use as an ID. If not, uses randomly generated 6-character ID. The
+-unstable naming convention:
++
++If it is not Stable (tag=git), we determine if the pyfa code base includes
++the git repo to use as an ID. If not, uses randomly generated 6-character ID.
++The unstable naming convention:
++
+     pyfa-YYYMMDD-id-platform
+ 
+-dist.py can also build the Windows installer provided that it has a path to Inno
+-Setup (and, for generating on non-Windows platforms, that WINE is installed).
+-To build the EXE file, `win` must be included in the platforms to be built.
++dist.py can also build the Windows installer provided that it has a path to
++Inno Setup (and, for generating on non-Windows platforms, that WINE is
++installed). To build the EXE file, `win` must be included in the platforms to
++be built.
+ """
+ 
++#@todo: ensure build directory can be written to
++# todo: default build and dist directories
++
+ from optparse import OptionParser
+ import os.path
+ import shutil
+@@ -25,6 +33,7 @@ import datetime
+ import random
+ import string
+ import zipfile
++import errno
+ from subprocess import call
+ 
+ class FileStub():
+@@ -34,6 +43,15 @@ class FileStub():
+     def flush(self, *args):
+         pass
+ 
++def copyanything(src, dst):
++    try:
++        shutil.copytree(src, dst, ignore=loginfo)
++    except: # python >2.5
++        try:
++            shutil.copy(src, dst)
++        except:
++            raise
++
+ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+     return ''.join(random.choice(chars) for x in range(size))
+ 
+@@ -42,7 +60,7 @@ def zipdir(path, zip):
+         for file in files:
+             zip.write(os.path.join(root, file))
+ 
+-skels = ['win', 'mac', 'src']
++skels = ['win', 'mac', 'src', 'win-wx3']
+ iscc =  "C:\Program Files (x86)\Inno Setup 5\ISCC.exe" # inno script location via wine
+ 
+ if __name__ == "__main__":
+@@ -52,7 +70,6 @@ if __name__ == "__main__":
+     parser.add_option("-b", "--base", dest="base", help="Location of cleaned read-only base directory")
+     parser.add_option("-d", "--destination", dest="destination", help="Where to copy our distributable")
+     parser.add_option("-p", "--platforms", dest="platforms", help="Comma-separated list of platforms to build", default="win,src,mac")
+-    parser.add_option("-t", "--static", dest="static", help="Directory containing static files")
+     parser.add_option("-q", "--quiet", dest="silent", action="store_true")
+     parser.add_option("-w", "--winexe", dest="winexe", action="store_true", help="Build the Windows installer file (needs Inno Setup). Must include 'win' in platform options")
+     parser.add_option("-z", "--zip", dest="zip", action="store_true", help="zip archive instead of tar")
+@@ -69,80 +86,109 @@ if __name__ == "__main__":
+ 
+     options.platforms = options.platforms.split(",")
+ 
+-    sys.path.append(options.base)
+-    import config as pyfaconfig
++    #sys.path.append(options.base)
++    #import config as pyfaconfig
+ 
+     for skel in skels:
+         if skel not in options.platforms:
+             continue
+ 
+         print "\n======== %s ========"%skel
+-        infoDict = {}
++
++        info = {}
++        config = {}
+         skeleton = os.path.expanduser(os.path.join(options.skeleton, skel))
+-        info = execfile(os.path.join(skeleton, "info.py"), infoDict)
+-        dirName = infoDict["arcname"]
++
++        execfile(os.path.join(options.base, "config.py"), config)
++        execfile(os.path.join(skeleton, "info.py"), info)
++
++        destination = os.path.expanduser(options.destination)
++        if not os.path.isdir(destination) or not os.access(destination, os.W_OK | os.X_OK):
++            print "Destination directory does not exist or is not writable: {}".format(destination)
++            sys.exit()
++
++        dirName = info["arcname"]
++
+         nowdt = datetime.datetime.now()
+         now = "%04d%02d%02d" % (nowdt.year, nowdt.month, nowdt.day)
++
+         git = False
+-        if pyfaconfig.tag.lower() == "git":
++        if config['tag'].lower() == "git":
+             try: # if there is a git repo associated with base, use master commit
+-                with open(os.path.join(options.base,".git","refs","heads","master"), 'r') as f:
++                with open(os.path.join(options.base, ".git", "refs", "heads", "master"), 'r') as f:
+                     id = f.readline()[0:6]
+                     git = True
+             except: # else, use custom ID
+                 id = id_generator()
+-            fileName = "pyfa-%s-%s-%s" % (now, id, infoDict["os"])
++            fileName = "pyfa-{}-{}-{}".format(now, id, info["os"])
+         else:
+-            fileName = "pyfa-%s-%s-%s-%s" % (pyfaconfig.version, pyfaconfig.expansionName.lower(), pyfaconfig.expansionVersion, infoDict["os"])
+-
+-        archiveName = "%s.%s"%(fileName, "zip" if options.zip else "tar.bz2")
++            fileName = "pyfa-{}-{}-{}-{}".format(
++                config['version'],
++                config['expansionName'].lower(),
++                config['expansionVersion'],
++                info["os"]
++            )
++
++        archiveName = "{}.{}".format(fileName, "zip" if options.zip else "tar.bz2")
+         dst = os.path.join(os.getcwd(), dirName) # tmp directory where files are copied
+         tmpFile = os.path.join(os.getcwd(), archiveName)
+-        config = os.path.join(skeleton, "config.py")
+-        destination = os.path.expanduser(options.destination)
+ 
+         i = 0
+-        gitData = (".git", ".gitignore", ".gitmodules")
++        ignoreData = (".git", ".gitignore", ".gitmodules", "dist_assets", "build", "dist", "scripts", ".idea")
+         def loginfo(path, names):
++            # Print out a "progress" and return directories / files to ignore
+             global i
+             i += 1
+             if i % 10 == 0:
+                 sys.stdout.write(".")
+                 sys.stdout.flush()
+-            return gitData
++            return ignoreData
+ 
+         try:
+             print "Copying skeleton to ", dst
+             i = 0
+             shutil.copytree(skeleton, dst, ignore=loginfo)
+             print
+-            base = os.path.join(dst, infoDict["base"])
+-            print "Copying base to ", base
+-
+-            i = 0
+-            for stuff in os.listdir(os.path.expanduser(options.base)):
+-                currSource = os.path.join(os.path.expanduser(options.base), stuff)
+-                currDest = os.path.join(base, stuff)
+-                if stuff in gitData:
+-                    continue
+-                elif os.path.isdir(currSource):
+-                    shutil.copytree(currSource, currDest, ignore=loginfo)
+-                else:
+-                    shutil.copy2(currSource, currDest)
+-
+-            print
++            if "win-wx3" not in skel:
++                # simply copying base into working build
++                base = os.path.join(dst, info["base"])
++                print "Copying base to ", base
++
++                i = 0
++                for stuff in os.listdir(os.path.expanduser(options.base)):
++                    currSource = os.path.join(os.path.expanduser(options.base), stuff)
++                    currDest = os.path.join(base, stuff)
++                    if stuff in ignoreData:
++                        continue
++                    elif os.path.isdir(currSource):
++                        shutil.copytree(currSource, currDest, ignore=loginfo)
++                    else:
++                        shutil.copy2(currSource, currDest)
++
++                print
++                print "Copying done, making archive: ", tmpFile
++            else:
++                # this should work, but it's barely been tested
++                base = os.path.join(dst, info["base"])
++                source = os.path.expanduser(options.base)
++                sys.path.append(source)
++                import setup
+ 
+-            if os.path.exists(config):
+-                print "Adding skeleton config file"
+-                shutil.copy2(config, base)
++                libraryFile = os.path.join(base, "library.zip")
+ 
++                with zipfile.ZipFile(libraryFile, 'a') as library:
++                    # change cwd to source so that the zip append will work correctly
++                    oldcwd = os.getcwd()
++                    os.chdir(source)
++                    for dir in setup.packages:
++                        zipdir(dir, library)
++                    library.write('pyfa.py', 'pyfa__main__.py')
++                    library.write('config.py')
+ 
+-            if options.static is not None and os.path.exists(os.path.expanduser(options.static)):
+-                print "Copying static data to ", os.path.join(base, "staticdata")
+-                static = os.path.expanduser(options.static)
+-                shutil.copytree(static, os.path.join(base, "staticdata"), ignore=loginfo)
++                for dir in setup.include_files:
++                    copyanything(dir, os.path.join(base, dir))
+ 
+-            print "Copying done, making archive: ", tmpFile
++                os.chdir(oldcwd)
+ 
+             if options.zip:
+                 archive = zipfile.ZipFile(tmpFile, 'w', compression=zipfile.ZIP_DEFLATED)
+@@ -150,7 +196,7 @@ if __name__ == "__main__":
+                 archive.close()
+             else:
+                 archive = tarfile.open(tmpFile, "w:bz2")
+-                archive.add(dst, arcname=infoDict["arcname"])
++                archive.add(dst, arcname=info["arcname"])
+                 archive.close()
+ 
+             print "Moving archive to ", destination
+@@ -159,20 +205,20 @@ if __name__ == "__main__":
+             if "win" in skel and options.winexe:
+                 print "Compiling EXE"
+ 
+-                if pyfaconfig.tag.lower() == "git":
++                if config['tag'].lower() == "git":
+                     if git:   # if git repo info available, use git commit
+                         expansion = "git-%s"%(id)
+                     else: # if there is no git repo, use timestamp
+                         expansion = now
+                 else: # if code is Stable, use expansion name
+-                   expansion = "%s %s"%(pyfaconfig.expansionName, pyfaconfig.expansionVersion),
++                   expansion = "%s %s"%(config['expansionName'], config['expansionVersion']),
+ 
+                 calllist = ["wine"] if 'win' not in sys.platform else []
+ 
+                 call(calllist + [
+                     iscc,
+                     os.path.join(os.path.dirname(__file__), "pyfa-setup.iss"),
+-                    "/dMyAppVersion=%s"%(pyfaconfig.version),
++                    "/dMyAppVersion=%s"%(config['version']),
+                     "/dMyAppExpansion=%s"%(expansion),
+                     "/dMyAppDir=%s"%dst,
+                     "/dMyOutputDir=%s"%destination,
 diff --git a/service/conversions/__init__.py b/service/conversions/__init__.py
 index c452fb6..c9ee794 100644
 --- a/service/conversions/__init__.py
@@ -873,7 +1269,7 @@ index c452fb6..c9ee794 100644
 +    packs[modname_tail] = conversionPack.CONVERSIONS
 --- /dev/null
 +++ b/setup.py
-@@ -0,0 +1,79 @@
+@@ -0,0 +1,80 @@
 +"""
 +Distribution builder for pyfa.
 +
@@ -881,78 +1277,79 @@ index c452fb6..c9ee794 100644
 +Windows executable + installer: python setup.py bdist_msi
 +"""
 +
-+import sys
-+
-+from cx_Freeze import setup, Executable
-+
-+import config
-+
-+
-+app_name = 'pyfa'
-+app_version = '{}'.format(config.version)
-+app_description = 'Python fitting assistant'
-+
-+
 +packages = ['eos', 'gui', 'service', 'utils']
 +include_files = ['icons', 'staticdata', 'gpl.txt']
 +includes = []
-+excludes = ['Tkinter']
++#  collection.abc due to bug:
++#  https://bitbucket.org/anthony_tuininga/cx_freeze/issues/127/collectionssys-error
++excludes = ['Tkinter', 'collections.abc']
 +
 +
-+# Windows-specific options
-+build_options_winexe = {
-+    'packages': packages,
-+    'include_files': include_files,
-+    'includes': includes,
-+    'excludes': excludes,
-+    'compressed': True,
-+    'optimize': 2,
-+    'include_msvcr': True,
-+}
-+
-+build_options_winmsi = {
-+    'upgrade_code': '{E80885AC-31BA-4D9A-A04F-9E5915608A6C}',
-+    'add_to_path': False,
-+    'initial_target_dir': r'[ProgramFilesFolder]\{}'.format(app_name),
-+}
 +
 +
-+# Mac-specific options (untested)
-+build_options_macapp = {
-+    'iconfile': 'dist_assets/mac/pyfa.icns',
-+    'bundle_name': app_name,
-+}
-+
-+build_options_macdmg = {
-+    'volume_label': app_name,
-+    'applications-shortcut': True,
-+}
++if __name__ == "__main__":
++    import sys
++    from cx_Freeze import setup, Executable
++    import config
 +
 +
-+# Generic executable options
-+executable_options = {
-+    'script': 'pyfa.py',
-+    # Following are windows-specific options, they are stored
-+    # on a per-executable basis
-+    'base': 'Win32GUI' if sys.platform=='win32' else None,
-+    'icon': 'dist_assets/win/pyfa.ico',
-+    'shortcutDir': 'DesktopFolder',
-+    'shortcutName': app_name,
-+}
++    app_name = 'pyfa'
++    app_version = '{}'.format(config.version)
++    app_description = 'Python fitting assistant'
++
++    # Windows-specific options
++    build_options_winexe = {
++        'packages': packages,
++        'include_files': include_files,
++        'includes': includes,
++        'excludes': excludes,
++        'compressed': True,
++        'optimize': 2,
++        'include_msvcr': True,
++    }
++
++    build_options_winmsi = {
++        'upgrade_code': '{E80885AC-31BA-4D9A-A04F-9E5915608A6C}',
++        'add_to_path': False,
++        'initial_target_dir': r'[ProgramFilesFolder]\{}'.format(app_name),
++    }
 +
 +
-+setup(
-+    name=app_name,
-+    version=app_version,
-+    description=app_description,
-+    options = {
-+        'build_exe': build_options_winexe,
-+        'bdist_msi': build_options_winmsi,
-+        'bdist_mac': build_options_macapp,
-+        'bdist_dmg': build_options_macdmg,
-+    },
-+    executables=[Executable(**executable_options)]
-+)
++    # Mac-specific options (untested)
++    build_options_macapp = {
++        'iconfile': 'dist_assets/mac/pyfa.icns',
++        'bundle_name': app_name,
++    }
++
++    build_options_macdmg = {
++        'volume_label': app_name,
++        'applications-shortcut': True,
++    }
++
++
++    # Generic executable options
++    executable_options = {
++        'script': 'pyfa.py',
++        # Following are windows-specific options, they are stored
++        # on a per-executable basis
++        'base': 'Win32GUI' if sys.platform=='win32' else None,
++        'icon': 'dist_assets/win/pyfa.ico',
++        'shortcutDir': 'DesktopFolder',
++        'shortcutName': app_name,
++    }
++
++    setup(
++        name=app_name,
++        version=app_version,
++        description=app_description,
++        options = {
++            'build_exe': build_options_winexe,
++            'bdist_msi': build_options_winmsi,
++            'bdist_mac': build_options_macapp,
++            'bdist_dmg': build_options_macdmg,
++        },
++        executables=[Executable(**executable_options)]
++    )
 diff --git a/staticdata/README.txt b/staticdata/README.txt
 deleted file mode 100644
 index 81f4f77..0000000

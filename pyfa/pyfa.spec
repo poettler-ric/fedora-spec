@@ -15,8 +15,8 @@
 # ... recreate the add-user-share...patch
 
 Name:           pyfa
-Version:        1.13.2
-Release:        2%{?dist}
+Version:        1.14.0
+Release:        1%{?dist}
 Summary:        Python fitting assistant, fitting tool for EVE Online
 
 Group:          -
@@ -64,7 +64,7 @@ cp -r eos $RPM_BUILD_ROOT/%{python2_sitelib}
 
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/pyfa
 # copy pyfa specific python files
-cp -r gui service  $RPM_BUILD_ROOT/%{_datadir}/pyfa/
+cp -r gui service utils $RPM_BUILD_ROOT/%{_datadir}/pyfa/
 # copy static data
 cp -r icons staticdata  $RPM_BUILD_ROOT/%{_datadir}/pyfa/
 # copy config file
