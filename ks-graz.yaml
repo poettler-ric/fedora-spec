@@ -1,0 +1,40 @@
+timezone: Europe/Vienna
+mirror_root: ftp.halifax.rwth-aachen.de/fedora/linux
+users:
+    richi:
+        gecos: Richard Poettler
+        password: __ask__
+        groups:
+            - wheel
+configurations:
+    min:
+        configurations:
+            _22:
+                release: 22
+            _23:
+                release: 23
+    cinnamon:
+        windowmanager: cinnamon
+        configurations:
+            _22:
+                release: 22
+            _23:
+                release: 23
+    laptop:
+        keymap:
+            vconsole: de-nodeadkeys
+            xlayout:
+                - de
+        windowmanager: cinnamon
+        packages:
+            - "@hardware-support"
+        update_volumes:
+            swap:
+                mountpoint: swap
+                fstype: swap
+                size: __hibernation__
+        configurations:
+            _22:
+                release: 22
+            _23:
+                release: 23
