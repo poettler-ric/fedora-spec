@@ -166,6 +166,8 @@ reboot --eject
 @gnome-desktop
 #@gnome-games
 #@gnome-software-development
+{% elif windowmanager == 'cinnamon' %}
+@cinnamon-desktop
 {% endif %}
 {% endif  %}
 
