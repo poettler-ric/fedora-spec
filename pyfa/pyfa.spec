@@ -15,7 +15,7 @@
 # ... recreate the add-user-share...patch
 
 Name:           pyfa
-Version:        1.14.0
+Version:        1.16.2
 Release:        1%{?dist}
 Summary:        Python fitting assistant, fitting tool for EVE Online
 
@@ -25,8 +25,6 @@ URL:            https://github.com/DarkFenX/Pyfa
 Source0:        %{name}-%{version}.tar.gz
 Source1:        pyfa.desktop
 Patch0:         add-usr-share-pyfa-to-python-searchpath.patch
-Patch1:         wx3.patch
-Patch2:         add-usr-share-pyfa-to-python-searchpath-wx3.patch
 
 BuildRequires:  python2-devel
 BuildRequires:  desktop-file-utils
@@ -47,12 +45,7 @@ possible combination of modules, fits, etc.
 %prep
 %setup -q -n Pyfa-%{version}
 
-%if 0%{?fedora} <= 21
 %patch0 -p1
-%else
-%patch1 -p1
-%patch2 -p1
-%endif
 
 
 %build
@@ -66,7 +59,8 @@ mkdir -p $RPM_BUILD_ROOT/%{_datadir}/pyfa
 # copy pyfa specific python files
 cp -r gui service utils $RPM_BUILD_ROOT/%{_datadir}/pyfa/
 # copy static data
-cp -r icons staticdata  $RPM_BUILD_ROOT/%{_datadir}/pyfa/
+cp -r imgs  $RPM_BUILD_ROOT/%{_datadir}/pyfa/
+cp eve.db  $RPM_BUILD_ROOT/%{_datadir}/pyfa/
 # copy config file
 cp config.py $RPM_BUILD_ROOT/%{_datadir}/pyfa/
 # copy pyfa binary
@@ -80,8 +74,8 @@ eof
 # install .desktop file
 desktop-file-install --dir $RPM_BUILD_ROOT/%{_datadir}/applications %{SOURCE1}
 # install pyfa icons
-install -D icons/pyfa.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/32x32/apps/pyfa.png
-install -D icons/pyfa64.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/64x64/apps/pyfa.png
+install -D imgs/gui/pyfa.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/32x32/apps/pyfa.png
+install -D imgs/gui/pyfa64.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/64x64/apps/pyfa.png
 
 
 %post

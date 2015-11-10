@@ -1,6 +1,6 @@
-From bb315839cd846ad23ee7c8e0a2bffe5d58d9252c Mon Sep 17 00:00:00 2001
+From ef514904cbd688e5fc095a2672089f3277908623 Mon Sep 17 00:00:00 2001
 From: Richard Poettler <richard.poettler@gmail.com>
-Date: Wed, 29 Jul 2015 18:40:46 +0200
+Date: Tue, 10 Nov 2015 11:06:08 +0100
 Subject: [PATCH] add /usr/share/pyfa to python searchpath
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH] add /usr/share/pyfa to python searchpath
  1 file changed, 2 insertions(+)
 
 diff --git a/pyfa.py b/pyfa.py
-index 76b7ca3..8366f6d 100755
+index c0d361d..0fa986c 100755
 --- a/pyfa.py
 +++ b/pyfa.py
 @@ -19,6 +19,8 @@
@@ -18,8 +18,8 @@ index 76b7ca3..8366f6d 100755
 +# we installed pyfa specific modules into another directory
 +sys.path.append("/usr/share/pyfa")
  import re
+ import config
  
- if not hasattr(sys, 'frozen'):
 -- 
 2.4.3
 
