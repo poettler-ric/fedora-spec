@@ -5,17 +5,9 @@
 # $ export VERSION=<version>
 # $ curl -o pyfa-${VERSION}.tar.gz \
 # >     https://codeload.github.com/DarkFenX/Pyfa/tar.gz/v${VERSION}
-#
-# How to generate the wx3 patch (replace v... with the actual release tag)
-# git diff v1.13.2 origin/wx3 |filterdiff >../wx3.patch
-# git checkout -b packaging v1.13.2
-# patch -p1 <../wx3.patch
-# git add .
-# git commit -m "applied wx3.patch"
-# ... recreate the add-user-share...patch
 
 Name:           pyfa
-Version:        1.16.2
+Version:        1.18.0
 Release:        1%{?dist}
 Summary:        Python fitting assistant, fitting tool for EVE Online
 
@@ -107,4 +99,3 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
-
