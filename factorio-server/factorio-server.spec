@@ -21,6 +21,7 @@ ExclusiveArch:  x86_64
 
 #BuildRequires:
 #Requires:
+Requires(pre):          shadow-utils
 
 %description
 
@@ -47,6 +48,11 @@ getent passwd %{factorio_user} >/dev/null || \
     useradd -r -g %{factorio_group} -d /var/empty -s /sbin/nologin \
     -c "factorio headless server" -m %{factorio_user}
 exit 0
+
+%post
+# FIXME: has to go once we have a dedicated directory for logs
+chmod 755 %{factorio_dir}
+chown %{factorio_user} %{factorio_dir}
 
 
 %files
