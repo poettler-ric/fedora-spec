@@ -129,54 +129,53 @@ logvol {{ volumedata.mountpoint }} --vgname=system --name={{ volume }} --fstype=
 reboot --eject
 
 %packages
-@core
-# TODO: is this needed?
-#@standard
-
-{% if windowmanager %}
-@base-x
-@fonts
-
-{# TODO: move this out of the template? #}
-{% if windowmanager == 'xfce' %}
-@xfce-desktop
-@xfce-apps
-@xfce-extra-plugins
-#@xfce-media
-#@xfce-office
-#@xfce-software-development
-{% elif windowmanager == 'lxde' %}
-@lxde-desktop
-#@lxde-apps
-#@lxde-media
-#@lxde-office
-{% elif windowmanager == 'mate' %}
-@mate-desktop
-#@mate-applications
-{% elif windowmanager == 'kde' %}
-@kde-desktop
-#@kde-apps
-#@kde-education
-#@kde-media
-#@kde-office
-#@kde-software-development
-#@kde-telepathy
-#@kf5-software-development
-{% elif windowmanager == 'gnome' %}
-@gnome-desktop
-#@gnome-games
-#@gnome-software-development
-{% elif windowmanager == 'cinnamon' %}
-@cinnamon-desktop
-{% endif %}
-{% endif  %}
-
-{% for p in packages %}
+{% for p in packages -%}
 {{ p }}
 {% endfor %}
-
 %end
 """.strip()
+
+__packageConfig = """
+default:
+    - "@core"
+    #- @standard
+x-default:
+    - "@base-x"
+    - "@fonts"
+windowmanagers:
+    xfce:
+        - "@xfce-desktop"
+        - "@xfce-apps"
+        - "@xfce-extra-plugins"
+        #- @xfce-media
+        #- @xfce-office
+        #- @xfce-software-development
+    lxde:
+        - "@lxde-desktop"
+        #- @lxde-apps
+        #- @lxde-media
+        #- @lxde-office
+    mate:
+        - "@mate-desktop"
+        #- @mate-applications
+    kde:
+        - "@kde-desktop"
+        #- @kde-apps
+        #- @kde-education
+        #- @kde-media
+        #- @kde-office
+        #- @kde-software-development
+        #- @kde-telepathy
+        #- @kf5-software-development
+    gnome:
+        - "@gnome-desktop"
+        #- @gnome-games
+        #- @gnome-software-development
+    cinnamon:
+        - "@cinnamon-desktop"
+""".strip()
+
+__packages = yaml.load(__packageConfig)
 
 __configDefaults = """
 rootpw: __ask__
@@ -232,6 +231,16 @@ def generateRandomPassword(length=RANDOM_PASSWORD_LENGTH):
 
 # TODO document logical volumes
 
+
+def generatePackages(configuration):
+    result = set(configuration.get('packages', []))
+    result |= set(__packages['default'])
+    if 'windowmanager' in configuration:
+        result |= set(__packages['x-default'])
+        result |= set(__packages['windowmanagers'].get(configuration['windowmanager'], []))
+    return result
+
+
 def generateConfiguration(template, configuration):
     # TODO document recursive/inherited configurations
     print("= configuring %s" % configuration.get('name', "defaults"))
@@ -260,6 +269,8 @@ def generateConfiguration(template, configuration):
                 c['name'] = configName
 
             c.update(configData)
+
+            c['packages'] = generatePackages(c)
 
             if 'update_volumes' in configData:
                 c['volumes'].update(configData['update_volumes'])
