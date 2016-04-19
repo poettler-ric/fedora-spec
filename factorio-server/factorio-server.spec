@@ -1,7 +1,7 @@
-# init script: https://github.com/Bisa/factorio-init
-# multiplayer server info: https://wiki.factorio.com/index.php?title=Multiplayer
+# bits and pieces stolen from https://github.com/Bisa/factorio-init
 # TODO: systemd unit file
 # TODO: server command interface (written in go)
+# TODO: maybe check for newer saves and use that script with ExecStartPre in the unit file
 
 %define factorio_dir /opt/factorio-server
 %define factorio_write_dir %{_var}/lib/factorio
@@ -27,7 +27,7 @@ ExclusiveArch:  x86_64
 Requires(pre):          shadow-utils
 
 %description
-
+TODO write description
 
 %prep
 %setup -q -n factorio
