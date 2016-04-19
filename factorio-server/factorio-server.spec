@@ -4,6 +4,7 @@
 # TODO: server command interface (written in go)
 
 %define factorio_dir /opt/factorio-server
+%define factorio_write_dir %{_var}/lib/factorio
 %define factorio_user factorio
 %define factorio_group factorio
 
@@ -16,6 +17,7 @@ Group:		-
 License:	-
 URL:		https://www.factorio.com/
 Source0:	factorio_headless_x64_%{version}.tar.gz
+Source1:	factorio-config.ini
 
 ExclusiveArch:  x86_64
 
@@ -36,9 +38,13 @@ Requires(pre):          shadow-utils
 %install
 %{__install} -d -m 755 $RPM_BUILD_ROOT%{factorio_dir}
 tar cf - . | tar xf - -C $RPM_BUILD_ROOT%{factorio_dir}
-# FIXME: put on /var
-%{__install} -d -m 755 $RPM_BUILD_ROOT%{factorio_dir}/{saves,temp}
-# FIXME: put %{factorio_dir}/factorio-{current,previous}.log in /var/log
+
+%__install -d -m 755 $RPM_BUILD_ROOT%{factorio_write_dir}
+
+%__install -D -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/factorio/config.ini
+%__sed -i s@_factorio_dir_@%{factorio_dir}@ $RPM_BUILD_ROOT%{_sysconfdir}/factorio/config.ini
+%__sed -i s@_factorio_write_dir_@%{factorio_write_dir}@ $RPM_BUILD_ROOT%{_sysconfdir}/factorio/config.ini
+
 
 
 %pre
@@ -49,19 +55,12 @@ getent passwd %{factorio_user} >/dev/null || \
     -c "factorio headless server" -m %{factorio_user}
 exit 0
 
-%post
-# FIXME: has to go once we have a dedicated directory for logs
-chmod 755 %{factorio_dir}
-chown %{factorio_user} %{factorio_dir}
-
 
 %files
 %defattr(-,root,root)
 %{factorio_dir}
-# FIXME: put on /var/lib
-%attr(755, %{factorio_user}, %{factorio_group}) %{factorio_dir}/saves
-# FIXME: put on /var/tmp ?
-%attr(755, %{factorio_user}, %{factorio_group}) %{factorio_dir}/temp
+%config(noreplace) %{_sysconfdir}/factorio/config.ini
+%attr(755, %{factorio_user}, %{factorio_group}) %{factorio_write_dir}
 
 
 
