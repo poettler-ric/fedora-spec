@@ -5,6 +5,7 @@
 
 %define factorio_dir /opt/factorio-server
 %define factorio_write_dir %{_var}/lib/factorio
+%define factorio_conf_dir %{_sysconfdir}/factorio
 %define factorio_user factorio
 %define factorio_group factorio
 
@@ -41,9 +42,9 @@ tar cf - . | tar xf - -C $RPM_BUILD_ROOT%{factorio_dir}
 
 %__install -d -m 755 $RPM_BUILD_ROOT%{factorio_write_dir}
 
-%__install -D -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/factorio/config.ini
-%__sed -i s@_factorio_dir_@%{factorio_dir}@ $RPM_BUILD_ROOT%{_sysconfdir}/factorio/config.ini
-%__sed -i s@_factorio_write_dir_@%{factorio_write_dir}@ $RPM_BUILD_ROOT%{_sysconfdir}/factorio/config.ini
+%__install -D -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{factorio_conf_dir}/config.ini
+%__sed -i s@_factorio_dir_@%{factorio_dir}@ $RPM_BUILD_ROOT%{factorio_conf_dir}/config.ini
+%__sed -i s@_factorio_write_dir_@%{factorio_write_dir}@ $RPM_BUILD_ROOT%{factorio_conf_dir}/config.ini
 
 
 
@@ -59,7 +60,7 @@ exit 0
 %files
 %defattr(-,root,root)
 %{factorio_dir}
-%config(noreplace) %{_sysconfdir}/factorio/config.ini
+%config(noreplace) %{factorio_conf_dir}/config.ini
 %attr(755, %{factorio_user}, %{factorio_group}) %{factorio_write_dir}
 
 
