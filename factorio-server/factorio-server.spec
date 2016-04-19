@@ -43,8 +43,8 @@ tar cf - . | tar xf - -C $RPM_BUILD_ROOT%{factorio_dir}
 %__install -d -m 755 $RPM_BUILD_ROOT%{factorio_write_dir}
 
 %__install -D -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{factorio_conf_dir}/config.ini
-%__sed -i s@_factorio_dir_@%{factorio_dir}@ $RPM_BUILD_ROOT%{factorio_conf_dir}/config.ini
-%__sed -i s@_factorio_write_dir_@%{factorio_write_dir}@ $RPM_BUILD_ROOT%{factorio_conf_dir}/config.ini
+%__sed -i s@__FACTORIO_DIR__@%{factorio_dir}@ $RPM_BUILD_ROOT%{factorio_conf_dir}/config.ini
+%__sed -i s@__FACTORIO_WRITE_DIR__@%{factorio_write_dir}@ $RPM_BUILD_ROOT%{factorio_conf_dir}/config.ini
 
 
 
