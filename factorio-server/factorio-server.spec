@@ -12,7 +12,7 @@
 Name:		factorio-server
 Version:	0.12.29
 Release:	1%{?dist}
-Summary:	factorio headless server
+Summary:	Factorio headless server
 
 Group:		-
 License:	-
@@ -53,7 +53,7 @@ getent group %{factorio_group} >/dev/null || groupadd -r %{factorio_group}
 # TODO: do we need a shell?
 getent passwd %{factorio_user} >/dev/null || \
     useradd -r -g %{factorio_group} -d /var/empty -s /sbin/nologin \
-    -c "factorio headless server" -m %{factorio_user}
+    -c "Factorio server" -m %{factorio_user}
 exit 0
 
 
