@@ -217,7 +217,7 @@ def generateSalt(length=SALT_LENGTH):
     return ''.join(random.SystemRandom().choice(
             string.ascii_letters + string.digits)
         for i in range(length))
-    
+
 def generatePassword(plainPassword):
     """Generate a password to put into ``/etc/shadow``."""
     return crypt(plainPassword, "$6$%s" % generateSalt())
