@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# TODO: maybe check for newer autosaves
+
+. __FACTORIO_CONF_DIR__/factorio.conf
+
+if [ ! -f "${FACTORIO_WRITE_DIR}/saves/${SAVE_NAME}.zip" ]
+then
+    "${FACTORIO_DIR}/bin/x64/factorio" --config "${FCONF}" --create "${SAVE_NAME}"
+fi
