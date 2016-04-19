@@ -1,5 +1,6 @@
+filename: "{mode}-{release}-{name}-{disk}.cfg"
 timezone: Europe/Vienna
-mirror_root: 172.16.254.102/fedora
+mirror_root: 10.0.0.8/fedora
 users:
     richi:
         gecos: Richard Poettler
@@ -9,23 +10,60 @@ users:
 configurations:
     min:
         configurations:
-            _21:
-                release: 21
             _22:
                 release: 22
-    xfce:
-        windowmanager: xfce
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
+            _23:
+                release: 23
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
+    cinnamon:
+        windowmanager: cinnamon
         configurations:
-            _21:
-                release: 21
             _22:
                 release: 22
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
+            _23:
+                release: 23
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
+    kde:
+        windowmanager: kde
+        configurations:
+            _22:
+                release: 22
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
+            _23:
+                release: 23
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
     laptop:
         keymap:
             vconsole: de-nodeadkeys
             xlayout:
                 - de
-        windowmanager: xfce
+        windowmanager: cinnamon
         packages:
             - "@hardware-support"
         update_volumes:
@@ -34,7 +72,7 @@ configurations:
                 fstype: swap
                 size: __hibernation__
         configurations:
-            _21:
-                release: 21
             _22:
                 release: 22
+            _23:
+                release: 23
