@@ -4,8 +4,8 @@
 %define ntpd_group openntpd
 
 Name:           openntpd
-Version:        5.7p4
-Release:        3%{?dist}
+Version:        5.9p1
+Release:        1%{?dist}
 Summary:        free and easy to use implementation of the network time protocol
 
 Group:          -
@@ -23,7 +23,7 @@ Requires(postun):       systemd
 %description
 OpenNTPD is a FREE, easy to use implementation of the Network Time Protocol. It
 provides the ability to sync the local clock to remote NTP servers and can act
-as NTP server itself, redistributing the local clock. 
+as NTP server itself, redistributing the local clock.
 
 
 %prep
@@ -83,4 +83,3 @@ exit 0
 
 
 %changelog
-
