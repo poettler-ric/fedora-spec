@@ -8,7 +8,7 @@
 %define factorio_group factorio
 
 Name:		factorio-server
-Version:	0.12.29
+Version:	0.12.33
 Release:	1%{?dist}
 Summary:	Factorio headless server
 
