@@ -8,7 +8,7 @@
 #
 
 Name:           winetricks
-Version:        20150810
+Version:        20160329
 Release:        1%{?dist}
 Summary:        Winetricks is an easy way to work around problems in Wine.
 BuildArch:      noarch
@@ -18,7 +18,7 @@ License:        -
 URL:            https://github.com/Winetricks/winetricks
 Source0:        %{name}-%{version}.tar.gz
 
-#BuildRequires: 
+#BuildRequires:
 Requires:       wine
 Requires:       cabextract
 
@@ -47,4 +47,3 @@ make install DESTDIR=%{buildroot}
 
 
 %changelog
-
