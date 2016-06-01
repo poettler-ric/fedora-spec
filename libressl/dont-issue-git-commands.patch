@@ -1,0 +1,29 @@
+From 38c71fb450b596efdeb56a65899b80749ea747cf Mon Sep 17 00:00:00 2001
+From: Richard Poettler <richard.poettler@gmail.com>
+Date: Thu, 26 May 2016 19:14:18 +0200
+Subject: [PATCH] dont issue git commands
+
+---
+ update.sh | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/update.sh b/update.sh
+index 14082a1..26bc43f 100755
+--- a/update.sh
++++ b/update.sh
+@@ -12,9 +12,9 @@ if [ ! -d openbsd ]; then
+ 		git clone $LIBRESSL_GIT/openbsd
+ 	fi
+ fi
+-(cd openbsd
+- git checkout $openbsd_branch
+- git pull --rebase)
++#(cd openbsd
++# git checkout $openbsd_branch
++# git pull --rebase)
+ 
+ # setup source paths
+ CWD=`pwd`
+-- 
+2.5.5
+
