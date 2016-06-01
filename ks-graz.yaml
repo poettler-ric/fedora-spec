@@ -25,7 +25,7 @@ configurations:
             vconsole: de-nodeadkeys
             xlayout:
                 - de
-        windowmanager: cinnamon
+        windowmanager: kde
         packages:
             - "@hardware-support"
         update_volumes:
