@@ -10,15 +10,15 @@ users:
 configurations:
     min:
         configurations:
-            _22:
-                release: 22
+            _23:
+                release: 23
                 configurations:
                     _sda:
                         disk: sda
                     _vda:
                         disk: vda
-            _23:
-                release: 23
+            _24:
+                release: 24
                 configurations:
                     _sda:
                         disk: sda
@@ -27,15 +27,15 @@ configurations:
     cinnamon:
         windowmanager: cinnamon
         configurations:
-            _22:
-                release: 22
+            _23:
+                release: 23
                 configurations:
                     _sda:
                         disk: sda
                     _vda:
                         disk: vda
-            _23:
-                release: 23
+            _24:
+                release: 24
                 configurations:
                     _sda:
                         disk: sda
@@ -44,15 +44,15 @@ configurations:
     kde:
         windowmanager: kde
         configurations:
-            _22:
-                release: 22
+            _23:
+                release: 23
                 configurations:
                     _sda:
                         disk: sda
                     _vda:
                         disk: vda
-            _23:
-                release: 23
+            _24:
+                release: 24
                 configurations:
                     _sda:
                         disk: sda
@@ -72,7 +72,7 @@ configurations:
                 fstype: swap
                 size: __hibernation__
         configurations:
-            _22:
-                release: 22
             _23:
                 release: 23
+            _24:
+                release: 24

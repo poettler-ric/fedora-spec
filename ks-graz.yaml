@@ -1,3 +1,4 @@
+filename: "{mode}-{release}-{name}-{disk}.cfg"
 timezone: Europe/Vienna
 mirror_root: ftp.halifax.rwth-aachen.de/fedora/linux
 users:
@@ -9,17 +10,54 @@ users:
 configurations:
     min:
         configurations:
-            _22:
-                release: 22
             _23:
                 release: 23
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
+            _24:
+                release: 24
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
     cinnamon:
         windowmanager: cinnamon
         configurations:
-            _22:
-                release: 22
             _23:
                 release: 23
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
+            _24:
+                release: 24
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
+    kde:
+        windowmanager: kde
+        configurations:
+            _23:
+                release: 23
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
+            _24:
+                release: 24
+                configurations:
+                    _sda:
+                        disk: sda
+                    _vda:
+                        disk: vda
     laptop:
         keymap:
             vconsole: de-nodeadkeys
@@ -34,7 +72,7 @@ configurations:
                 fstype: swap
                 size: __hibernation__
         configurations:
-            _22:
-                release: 22
             _23:
                 release: 23
+            _24:
+                release: 24
