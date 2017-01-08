@@ -5,7 +5,7 @@ After=network.target
  
 [Service]
 Type=forking
-ExecStart=/usr/sbin/openntpd
+ExecStart=/bin/sh -c "test -f /etc/sysconfig/openntpd && . /etc/sysconfig/openntpd ; exec /usr/sbin/openntpd $OPTIONS"
 
 [Install]
 WantedBy=multi-user.target
