@@ -1,0 +1,2 @@
+# Use "-s" for setting the time immediately at startup, as opposed to slowly adjusting the clock.
+#OPTIONS="-s"
