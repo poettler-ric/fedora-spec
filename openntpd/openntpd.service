@@ -4,8 +4,8 @@ Documentation=man:openntpd(8) man:ntpd.conf(5)
 After=network.target
  
 [Service]
-Type=forking
-ExecStart=/bin/sh -c "test -f /etc/sysconfig/openntpd && . /etc/sysconfig/openntpd ; exec /usr/sbin/openntpd $OPTIONS"
+Type=simple
+ExecStart=/bin/sh -c "test -f /etc/sysconfig/openntpd && . /etc/sysconfig/openntpd ; exec /usr/sbin/openntpd -d $OPTIONS"
 
 [Install]
 WantedBy=multi-user.target
