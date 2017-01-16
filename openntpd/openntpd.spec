@@ -7,7 +7,7 @@
 
 Name:           openntpd
 Version:        6.0p1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        free and easy to use implementation of the network time protocol
 
 Group:          -
