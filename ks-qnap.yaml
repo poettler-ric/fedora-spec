@@ -1,6 +1,6 @@
 filename: "{mode}-{release}-{name}-{disk}.cfg"
 timezone: Europe/Vienna
-mirror_root: fedora.inode.at
+mirror_root: 192.168.178.11/fedora/fedora
 users:
     richi:
         gecos: Richard Poettler
@@ -17,25 +17,16 @@ configurations:
                         disk: sda
                     _vda:
                         disk: vda
-            _25:
-                release: 25
-                configurations:
-                    _sda:
-                        disk: sda
-                    _vda:
-                        disk: vda
     cinnamon:
         windowmanager: cinnamon
+        update_volumes:
+            root:
+                mountpoint: /
+                fstype: xfs
+                size: 10240
         configurations:
             _26:
                 release: 26
-                configurations:
-                    _sda:
-                        disk: sda
-                    _vda:
-                        disk: vda
-            _25:
-                release: 25
                 configurations:
                     _sda:
                         disk: sda
@@ -43,16 +34,14 @@ configurations:
                         disk: vda
     kde:
         windowmanager: kde
+        update_volumes:
+            root:
+                mountpoint: /
+                fstype: xfs
+                size: 10240
         configurations:
             _26:
                 release: 26
-                configurations:
-                    _sda:
-                        disk: sda
-                    _vda:
-                        disk: vda
-            _25:
-                release: 25
                 configurations:
                     _sda:
                         disk: sda
@@ -64,6 +53,11 @@ configurations:
             xlayout:
                 - de
         windowmanager: kde
+        update_volumes:
+            root:
+                mountpoint: /
+                fstype: xfs
+                size: 10240
         packages:
             - "@hardware-support"
         update_volumes:
@@ -74,5 +68,3 @@ configurations:
         configurations:
             _26:
                 release: 26
-            _25:
-                release: 25
