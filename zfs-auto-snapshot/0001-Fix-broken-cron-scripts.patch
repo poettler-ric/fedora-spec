@@ -1,0 +1,66 @@
+From 8c45add2c03e89e5c1b7f69b2007e6ad684aaf4d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andreas=20Lindh=C3=A9?= <andreas@lindhe.io>
+Date: Wed, 5 Jul 2017 23:11:43 +0200
+Subject: [PATCH 1/2] Fix broken cron scripts
+
+I found that none of the daily, hourly, weekly or monthly snapshots were
+being taken. When I looked into it I found that the scripts didn't
+execute properly, because of the newly introduced check (9c6f065).
+
+I'm not versed enough with POSIX to understand if there was some clever
+intention with using exec than just calling which by it self, but it
+works without exec so I removed it.
+---
+ etc/zfs-auto-snapshot.cron.daily   | 2 +-
+ etc/zfs-auto-snapshot.cron.hourly  | 2 +-
+ etc/zfs-auto-snapshot.cron.monthly | 2 +-
+ etc/zfs-auto-snapshot.cron.weekly  | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/etc/zfs-auto-snapshot.cron.daily b/etc/zfs-auto-snapshot.cron.daily
+index 94cd7a2..7390399 100644
+--- a/etc/zfs-auto-snapshot.cron.daily
++++ b/etc/zfs-auto-snapshot.cron.daily
+@@ -1,5 +1,5 @@
+ #!/bin/sh
+ 
+ # Only call zfs-auto-snapshot if it's available
+-exec which zfs-auto-snapshot > /dev/null && \
++which zfs-auto-snapshot > /dev/null && \
+      zfs-auto-snapshot --quiet --syslog --label=daily --keep=31 //
+diff --git a/etc/zfs-auto-snapshot.cron.hourly b/etc/zfs-auto-snapshot.cron.hourly
+index a893409..4e15d04 100644
+--- a/etc/zfs-auto-snapshot.cron.hourly
++++ b/etc/zfs-auto-snapshot.cron.hourly
+@@ -1,5 +1,5 @@
+ #!/bin/sh
+ 
+ # Only call zfs-auto-snapshot if it's available
+-exec which zfs-auto-snapshot > /dev/null && \
++which zfs-auto-snapshot > /dev/null && \
+      zfs-auto-snapshot --quiet --syslog --label=hourly --keep=24 //
+diff --git a/etc/zfs-auto-snapshot.cron.monthly b/etc/zfs-auto-snapshot.cron.monthly
+index 7394e99..57e2050 100644
+--- a/etc/zfs-auto-snapshot.cron.monthly
++++ b/etc/zfs-auto-snapshot.cron.monthly
+@@ -1,5 +1,5 @@
+ #!/bin/sh
+ 
+ # Only call zfs-auto-snapshot if it's available
+-exec which zfs-auto-snapshot > /dev/null && \
++which zfs-auto-snapshot > /dev/null && \
+      zfs-auto-snapshot --quiet --syslog --label=monthly --keep=12 //
+diff --git a/etc/zfs-auto-snapshot.cron.weekly b/etc/zfs-auto-snapshot.cron.weekly
+index 9e20f31..f2d98d0 100644
+--- a/etc/zfs-auto-snapshot.cron.weekly
++++ b/etc/zfs-auto-snapshot.cron.weekly
+@@ -1,5 +1,5 @@
+ #!/bin/sh
+ 
+ # Only call zfs-auto-snapshot if it's available
+-exec which zfs-auto-snapshot > /dev/null && \
++which zfs-auto-snapshot > /dev/null && \
+      zfs-auto-snapshot --quiet --syslog --label=weekly --keep=8 //
+-- 
+2.9.4
+

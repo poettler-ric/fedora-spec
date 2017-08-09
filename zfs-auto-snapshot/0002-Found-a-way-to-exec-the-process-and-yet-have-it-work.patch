@@ -1,0 +1,55 @@
+From 739972f18ad07bbba71d8b028c8ec443b7b9fd05 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andreas=20Lindh=C3=A9?= <andreas@lindhe.io>
+Date: Thu, 6 Jul 2017 09:20:54 +0200
+Subject: [PATCH 2/2] Found a way to exec the process and yet have it work
+
+---
+ etc/zfs-auto-snapshot.cron.daily   | 2 +-
+ etc/zfs-auto-snapshot.cron.hourly  | 2 +-
+ etc/zfs-auto-snapshot.cron.monthly | 2 +-
+ etc/zfs-auto-snapshot.cron.weekly  | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/etc/zfs-auto-snapshot.cron.daily b/etc/zfs-auto-snapshot.cron.daily
+index 7390399..89a6a13 100644
+--- a/etc/zfs-auto-snapshot.cron.daily
++++ b/etc/zfs-auto-snapshot.cron.daily
+@@ -2,4 +2,4 @@
+ 
+ # Only call zfs-auto-snapshot if it's available
+ which zfs-auto-snapshot > /dev/null && \
+-     zfs-auto-snapshot --quiet --syslog --label=daily --keep=31 //
++     exec zfs-auto-snapshot --quiet --syslog --label=daily --keep=31 //
+diff --git a/etc/zfs-auto-snapshot.cron.hourly b/etc/zfs-auto-snapshot.cron.hourly
+index 4e15d04..b558269 100644
+--- a/etc/zfs-auto-snapshot.cron.hourly
++++ b/etc/zfs-auto-snapshot.cron.hourly
+@@ -2,4 +2,4 @@
+ 
+ # Only call zfs-auto-snapshot if it's available
+ which zfs-auto-snapshot > /dev/null && \
+-     zfs-auto-snapshot --quiet --syslog --label=hourly --keep=24 //
++     exec zfs-auto-snapshot --quiet --syslog --label=hourly --keep=24 //
+diff --git a/etc/zfs-auto-snapshot.cron.monthly b/etc/zfs-auto-snapshot.cron.monthly
+index 57e2050..4b1ad17 100644
+--- a/etc/zfs-auto-snapshot.cron.monthly
++++ b/etc/zfs-auto-snapshot.cron.monthly
+@@ -2,4 +2,4 @@
+ 
+ # Only call zfs-auto-snapshot if it's available
+ which zfs-auto-snapshot > /dev/null && \
+-     zfs-auto-snapshot --quiet --syslog --label=monthly --keep=12 //
++     exec zfs-auto-snapshot --quiet --syslog --label=monthly --keep=12 //
+diff --git a/etc/zfs-auto-snapshot.cron.weekly b/etc/zfs-auto-snapshot.cron.weekly
+index f2d98d0..574a5e2 100644
+--- a/etc/zfs-auto-snapshot.cron.weekly
++++ b/etc/zfs-auto-snapshot.cron.weekly
+@@ -2,4 +2,4 @@
+ 
+ # Only call zfs-auto-snapshot if it's available
+ which zfs-auto-snapshot > /dev/null && \
+-     zfs-auto-snapshot --quiet --syslog --label=weekly --keep=8 //
++     exec zfs-auto-snapshot --quiet --syslog --label=weekly --keep=8 //
+-- 
+2.9.4
+
