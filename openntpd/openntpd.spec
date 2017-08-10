@@ -12,12 +12,12 @@ Summary:        free and easy to use implementation of the network time protocol
 
 Group:          -
 License:        BSD
-URL:            http://www.openntpd.org/
-Source0:        https://github.com/openntpd-portable/openntpd-portable/archive/%{version}.tar.gz
+URL:            https://github.com/openntpd-portable
+Source0:        %{url}/openntpd-portable/archive/%{version}.tar.gz
 Source1:        openntpd.service
 Source2:        openntpd.sysconfig
 Source3:        openntpd.init
-Source4:        https://github.com/openntpd-portable/openntpd-openbsd/archive/%{name}-%{version}.tar.gz
+Source4:        %{url}/openntpd-openbsd/archive/%{name}-%{version}.tar.gz
 
 BuildRequires:          autoconf, automake, libtool, byacc
 %if %{use_systemd}
