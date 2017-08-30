@@ -1,6 +1,7 @@
 filename: "{mode}-{release}-{name}-{disk}.cfg"
 timezone: Europe/Vienna
 mirror_root: 192.168.178.15/fedora/fedora
+release: 26
 users:
     richi:
         gecos: Richard Poettler
@@ -11,7 +12,6 @@ configurations:
     min:
         configurations:
             _26:
-                release: 26
                 configurations:
                     _sda:
                         disk: sda
@@ -26,7 +26,6 @@ configurations:
                 size: 10240
         configurations:
             _26:
-                release: 26
                 configurations:
                     _sda:
                         disk: sda
@@ -41,7 +40,6 @@ configurations:
                 size: 10240
         configurations:
             _26:
-                release: 26
                 configurations:
                     _sda:
                         disk: sda
@@ -65,6 +63,3 @@ configurations:
                 mountpoint: swap
                 fstype: swap
                 size: __hibernation__
-        configurations:
-            _26:
-                release: 26
