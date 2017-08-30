@@ -140,8 +140,8 @@ default:
     - "@core"
     #- @standard
 x-default:
-    - "@base-x"
     - "@fonts"
+    # - "@base-x"
 windowmanagers:
     xfce:
         - "@xfce-desktop"
