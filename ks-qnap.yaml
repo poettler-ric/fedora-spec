@@ -11,12 +11,10 @@ users:
 configurations:
     min:
         configurations:
-            _26:
-                configurations:
-                    _sda:
-                        disk: sda
-                    _vda:
-                        disk: vda
+            _sda:
+                disk: sda
+            _vda:
+                disk: vda
     cinnamon:
         windowmanager: cinnamon
         update_volumes:
@@ -25,12 +23,10 @@ configurations:
                 fstype: xfs
                 size: 10240
         configurations:
-            _26:
-                configurations:
-                    _sda:
-                        disk: sda
-                    _vda:
-                        disk: vda
+            _sda:
+                disk: sda
+            _vda:
+                disk: vda
     kde:
         windowmanager: kde
         update_volumes:
@@ -39,12 +35,10 @@ configurations:
                 fstype: xfs
                 size: 10240
         configurations:
-            _26:
-                configurations:
-                    _sda:
-                        disk: sda
-                    _vda:
-                        disk: vda
+            _sda:
+                disk: sda
+            _vda:
+                disk: vda
     laptop:
         keymap:
             vconsole: de-nodeadkeys
