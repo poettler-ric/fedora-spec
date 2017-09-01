@@ -8,14 +8,14 @@
 %define factorio_group factorio
 
 Name:		factorio-server
-Version:	0.12.33
+Version:	0.15.33
 Release:	1%{?dist}
 Summary:	Factorio headless server
 
 Group:		-
 License:	-
 URL:		https://www.factorio.com/
-Source0:	factorio_headless_x64_%{version}.tar.gz
+Source0:	factorio_headless_x64_%{version}.tar.xz
 Source1:	factorio-config.ini
 Source2:    factorio.conf
 Source3:    factorio-create-save
