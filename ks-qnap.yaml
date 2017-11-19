@@ -1,7 +1,7 @@
 filename: "{mode}-{release}-{name}-{disk}.cfg"
 timezone: Europe/Vienna
 mirror_root: 192.168.178.15/fedora/fedora
-release: 26
+release: 27
 users:
     richi:
         gecos: Richard Poettler
