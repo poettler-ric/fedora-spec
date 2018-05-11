@@ -115,6 +115,9 @@ bootloader --location=mbr --boot-drive={{ disk }}
 
 {# TODO: make readable #}
 part /boot --fstype=xfs {% if mode == 'install' %}--recommended{% elif mode == 'upgrade' %} --onpart={{ disk }}1{% endif %}
+{% if efi %}
+part /boot/efi --fstype="efi" --ondisk=sdb --size=200 --fsoptions="umask=0077,shortname=winnt" --label=efi
+{% endif %}
 part pv.01 {% if mode == 'install' %}--grow{% elif mode == 'upgrade' %} --noformat --onpart={{ disk }}2{% endif %}
 volgroup system {% if mode == 'install' %}pv.01{% elif mode == 'upgrade' %}--useexisting --noformat{% endif %}
 
