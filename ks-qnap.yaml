@@ -15,24 +15,11 @@ configurations:
                 disk: sda
             _vda:
                 disk: vda
-    kde:
-        windowmanager: kde
-        update_volumes:
-            root:
-                mountpoint: /
-                fstype: xfs
-                size: 10240
-        configurations:
-            _sda:
-                disk: sda
-            _vda:
-                disk: vda
     laptop:
         keymap:
             vconsole: de-nodeadkeys
             xlayout:
                 - de
-        windowmanager: kde
         update_volumes:
             root:
                 mountpoint: /
