@@ -6,7 +6,7 @@
 %define use_systemd (0%{?fedora} && 0%{?fedora} >= 18) || (0%{?rhel} && 0%{?rhel} >= 7) || (0%{?suse_version} && 0%{?suse_version} >=1210)
 
 Name:           openntpd
-Version:        6.1p1
+Version:        6.2p3
 Release:        1%{?dist}
 Summary:        free and easy to use implementation of the network time protocol
 
