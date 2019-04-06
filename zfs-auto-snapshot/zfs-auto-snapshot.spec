@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:		zfs-auto-snapshot
-Version:	1.2.2
+Version:	1.2.4
 Release:	1%{?dist}
 Summary:	ZFS Automatic Snapshot Service for Linux
 
@@ -30,8 +30,6 @@ the zfs utilities and cron, and can run in the dash shell.
 
 %prep
 %setup -q -n %{name}-upstream-%{version}
-%patch0 -p1
-%patch1 -p1
 sed -i s@/usr/local@/usr@ Makefile
 
 
