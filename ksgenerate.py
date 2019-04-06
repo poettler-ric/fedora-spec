@@ -71,7 +71,7 @@ RANDOM_PASSWORD_LENGTH = 32
 __ksTemplate = """
 install
 url --url=http://{{ mirror_root }}/releases/{{ release }}/Everything/{{ architecture }}/os/
-repo --name="Updates" --baseurl=http://{{ mirror_root }}/updates/{{ release }}/{{ architecture }}/
+repo --name="Updates" --baseurl=http://{{ mirror_root }}/updates/{{ release }}/Everything/{{ architecture }}/
 
 text
 
