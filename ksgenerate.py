@@ -217,22 +217,25 @@ volumes:
 
 __modes = ('install', 'upgrade')
 
+
 def generateSalt(length=SALT_LENGTH):
     """Generate a random salt of ``SALT_LENGTH`` alphanumerical characters."""
     return ''.join(random.SystemRandom().choice(
-            string.ascii_letters + string.digits)
+        string.ascii_letters + string.digits)
         for i in range(length))
+
 
 def generatePassword(plainPassword):
     """Generate a password to put into ``/etc/shadow``."""
     return crypt(plainPassword, "$6$%s" % generateSalt())
+
 
 def generateRandomPassword(length=RANDOM_PASSWORD_LENGTH):
     """Generate a random password with upper and lowercase letters and
     digits."""
     return generatePassword(
         ''.join(random.SystemRandom().choice(string.letters + string.digits)
-            for i in range(length)))
+                for i in range(length)))
 
 # TODO document logical volumes
 
@@ -242,7 +245,8 @@ def generatePackages(configuration):
     result |= set(__packages['default'])
     if 'windowmanager' in configuration:
         result |= set(__packages['x-default'])
-        result |= set(__packages['windowmanagers'].get(configuration['windowmanager'], []))
+        result |= set(__packages['windowmanagers'].get(
+            configuration['windowmanager'], []))
     return result
 
 
@@ -255,7 +259,8 @@ def generateConfiguration(template, configuration):
     if 'users' in configuration:
         for user, userdata in configuration['users'].items():
             if userdata['password'] == '__ask__':
-                userdata['password'] = generatePassword(getpass("password for %s:" % user))
+                userdata['password'] = generatePassword(
+                    getpass("password for %s:" % user))
 
     # if there are multiple configurations defined interate down the tree
     if 'configurations' in configuration:
@@ -267,7 +272,8 @@ def generateConfiguration(template, configuration):
             del c['configurations']
 
             # if the configuration name starts with '_' inherit the name of the parent
-            # TODO: extend configuration names? parent name: "test" child "+-xfce" -> "test-xfce"
+            # TODO: extend configuration names? parent name: "test" child
+            # "+-xfce" -> "test-xfce"
             if configName.startswith('_'):
                 c['name'] = configuration['name']
             else:
@@ -287,18 +293,21 @@ def generateConfiguration(template, configuration):
             configuration['mode'] = mode
             writeConfiguration(template, configuration)
 
+
 def writeConfiguration(template, configuration):
     # TODO document naming scheme
-    filename = configuration.get('filename', '{mode}-{release}-{name}.cfg').format(**configuration)
+    filename = configuration.get(
+        'filename', '{mode}-{release}-{name}.cfg').format(**configuration)
     print("= writing %s" % filename)
     with open(filename, 'w') as f:
         f.write(template.render(configuration))
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Generate kickstart configuration files")
+    parser = argparse.ArgumentParser(
+        description="Generate kickstart configuration files")
     parser.add_argument("file",
-        nargs='+',
-        help="configuration file for the generation")
+                        nargs='+',
+                        help="configuration file for the generation")
     args = parser.parse_args()
 
     template = Template(__ksTemplate)
