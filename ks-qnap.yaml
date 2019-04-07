@@ -15,6 +15,21 @@ configurations:
                 disk: sda
             _vda:
                 disk: vda
+    ws:
+        update_volumes:
+            root:
+                mountpoint: /
+                fstype: xfs
+                size: 15360
+            var:
+                mountpoint: /var
+                fstype: xfs
+                size: 5120
+        configurations:
+            _sda:
+                disk: sda
+            _vda:
+                disk: vda
     laptop:
         keymap:
             vconsole: de-nodeadkeys
