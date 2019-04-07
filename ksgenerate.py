@@ -72,6 +72,8 @@ __ksTemplate = """
 install
 url --url=http://{{ mirror_root }}/releases/{{ release }}/Everything/{{ architecture }}/os/
 repo --name="Updates" --baseurl=http://{{ mirror_root }}/updates/{{ release }}/Everything/{{ architecture }}/
+repo --name="Modular" --baseurl=http://{{ mirror_root }}/releases/{{ release }}/Modular/{{ architecture }}/os/
+repo --name="ModularUpdates" --baseurl=http://{{ mirror_root }}/updates/{{ release }}/Modular/{{ architecture }}/
 
 text
 
