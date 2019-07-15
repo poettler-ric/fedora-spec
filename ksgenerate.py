@@ -120,8 +120,10 @@ bootloader --location=mbr --boot-drive={{ disk }}
 part /boot --fstype=xfs {% if mode == 'install' %}--recommended{% elif mode == 'upgrade' %} --onpart={{ disk }}1{% endif %}
 {% if efi %}
 part /boot/efi --fstype="efi" {% if mode == 'install' %}--size=200{% elif mode == 'upgrade' %}--onpart={{ disk }}2{% endif %} --fsoptions="umask=0077,shortname=winnt" --label=efi
-{% endif %}
+part pv.01 {% if mode == 'install' %}--grow{% elif mode == 'upgrade' %} --noformat --onpart={{ disk }}3{% endif %}
+{% else %}
 part pv.01 {% if mode == 'install' %}--grow{% elif mode == 'upgrade' %} --noformat --onpart={{ disk }}2{% endif %}
+{% endif %}
 volgroup system {% if mode == 'install' %}pv.01{% elif mode == 'upgrade' %}--useexisting --noformat{% endif %}
 
 {# TODO: make readable #}
