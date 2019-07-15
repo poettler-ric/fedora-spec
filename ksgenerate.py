@@ -42,6 +42,7 @@ ask for a password.
     * mate
     * kde
     * gnome
+    * deepin
 * Keymap
     * Console (name: ``keymap.vconsole`` default: ``us``): Valid names
       correspond to the list of files in the ``/usr/lib/kbd/keymaps/*``
@@ -178,9 +179,14 @@ windowmanagers:
         #- @gnome-software-development
     cinnamon:
         - "@cinnamon-desktop"
+    deepin:
+        - "@deepin-desktop"
+        #- "@deepin-desktop-apps"
+        #- "@deepin-desktop-media"
+        #- "@deepin-desktop-office"
 """.strip()
 
-__packages = yaml.load(__packageConfig)
+__packages = yaml.load(__packageConfig, Loader=yaml.FullLoader)
 
 __configDefaults = """
 rootpw: __ask__
