@@ -1,7 +1,7 @@
 filename: "{mode}.{release}.{name}.{disk}.cfg"
 timezone: Europe/Vienna
 mirror_root: 192.168.178.15/fedora/fedora
-release: 29
+release: 30
 users:
     richi:
         gecos: Richard Poettler
@@ -10,6 +10,30 @@ users:
             - wheel
 configurations:
     min:
+        configurations:
+            _sda:
+                disk: sda
+            _vda:
+                disk: vda
+    kde:
+        windowmanager: kde
+        update_volumes:
+            root:
+                mountpoint: /
+                fstype: xfs
+                size: 10240
+        configurations:
+            _sda:
+                disk: sda
+            _vda:
+                disk: vda
+    lxde:
+        windowmanager: lxde
+        update_volumes:
+            root:
+                mountpoint: /
+                fstype: xfs
+                size: 10240
         configurations:
             _sda:
                 disk: sda
@@ -39,11 +63,14 @@ configurations:
             root:
                 mountpoint: /
                 fstype: xfs
-                size: 10240
-        packages:
-            - "@hardware-support"
-        update_volumes:
+                size: 15360
+            var:
+                mountpoint: /var
+                fstype: xfs
+                size: 5120
             swap:
                 mountpoint: swap
                 fstype: swap
                 size: __hibernation__
+        packages:
+            - "@hardware-support"
