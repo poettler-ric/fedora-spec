@@ -60,11 +60,11 @@ ask for a password.
 
 from crypt import crypt
 from getpass import getpass
-from jinja2 import Template
 import argparse
 import random
 import string
 import yaml
+from jinja2 import Template
 
 SALT_LENGTH = 16
 RANDOM_PASSWORD_LENGTH = 32
@@ -317,10 +317,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     template = Template(__ksTemplate)
-    configuration = yaml.load(__configDefaults)
+    configuration = yaml.load(__configDefaults, Loader=yaml.FullLoader)
 
     for f in args.file:
         c = configuration.copy()
         with open(f) as s:
-            c.update(yaml.load(s))
+            c.update(yaml.load(s, Loader=yaml.FullLoader))
         generateConfiguration(template, c)
