@@ -12,6 +12,12 @@ Source0:        https://github.com/%{iname}/%{iname}/archive/v%{version}.tar.gz
 Source1:        https://github.com/%{iname}/%{iname}/releases/download/v%{version}/%{iname}-linux-amd64
 
 BuildRequires:      systemd
+# Requirements to execute `make release`
+#BuildRequires:      protobuf-compile
+#BuildRequires:      golang-googleconde-goprotobuf
+#BuildRequires:      golang-googleconde-tools-stringer
+# TODO: enumer missing
+
 Requires(post):     systemd
 Requires(preun):    systemd
 Requires(postun):   systemd
