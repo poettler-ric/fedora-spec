@@ -2,7 +2,7 @@
 %define iname zrepl
 
 Name:           zrepl-bin
-Version:        0.1.1
+Version:        0.2.0
 Release:        1%{?dist}
 Summary:        One-stop ZFS backup & replication solution
 
@@ -31,7 +31,6 @@ Config file is expected to be '/etc/zrepl/zrepl.yml'
 install -D -m 755 %{SOURCE1} %{buildroot}%{_sbindir}/zrepl
 install -D -m 644 dist/systemd/zrepl.service %{buildroot}%{_unitdir}/zrepl.service
 sed -i s:/usr/local/bin/:%{_sbindir}/:g %{buildroot}%{_unitdir}/zrepl.service
-# TODO: fix service file
 
 
 %post
