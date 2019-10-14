@@ -1,6 +1,6 @@
 .PHONY: sources
 
-SPEC_FILE=zrepl-bin.spec
+SPEC_FILE=zrepl.spec
 
 sources:
 	spectool -g ${SPEC_FILE}

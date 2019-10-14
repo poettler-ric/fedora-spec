@@ -1,15 +1,14 @@
 %global debug_package %{nil}
-%define iname zrepl
 
-Name:           zrepl-bin
+Name:           zrepl
 Version:        0.2.0
 Release:        1%{?dist}
 Summary:        One-stop ZFS backup & replication solution
 
 License:        MIT
 URL:            https://zrepl.github.io/
-Source0:        https://github.com/%{iname}/%{iname}/archive/v%{version}.tar.gz
-Source1:        https://github.com/%{iname}/%{iname}/releases/download/v%{version}/%{iname}-linux-amd64
+Source0:        https://github.com/%{name}/%{name}/archive/v%{version}.tar.gz
+Source1:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-linux-amd64
 
 BuildRequires:      systemd
 # Requirements to execute `make release`
@@ -27,7 +26,7 @@ Config file is expected to be '/etc/zrepl/zrepl.yml'
 
 
 %prep
-%setup -q -n %{iname}-%{version}
+%setup -q -n %{name}-%{version}
 
 
 %build
