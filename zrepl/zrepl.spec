@@ -1,39 +1,55 @@
 %global debug_package %{nil}
 
-Name:           zrepl
+%global goipath github.com/zrepl/zrepl
 Version:        0.2.0
-Release:        1%{?dist}
+
+%if 0%{?go_compiler}
+%gometa
+%endif
+
+Name:           zrepl
+Release:        2%{?dist}
 Summary:        One-stop ZFS backup & replication solution
 
 License:        MIT
 URL:            https://zrepl.github.io/
-Source0:        https://github.com/%{name}/%{name}/archive/v%{version}.tar.gz
-Source1:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-linux-amd64
+%if 0%{?go_compiler}
+Source0:	%{gosource}
+%else
+Source0:	%{name}-%{version}.tar.gz
+%endif
 
 BuildRequires:      systemd
-# Requirements to execute `make release`
-#BuildRequires:      protobuf-compile
-#BuildRequires:      golang-googleconde-goprotobuf
-#BuildRequires:      golang-googleconde-tools-stringer
-# TODO: enumer missing
+BuildRequires:      %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
+BuildRequires:      git
+# TODO: build dependencies with `golist`
 
 Requires(post):     systemd
 Requires(preun):    systemd
 Requires(postun):   systemd
+
+ExclusiveArch:      %{go_arches}
 
 %description
 Config file is expected to be '/etc/zrepl/zrepl.yml'
 
 
 %prep
+%if 0%{?fedora} >= 31
+%goprep
+%else
 %setup -q -n %{name}-%{version}
+%endif
 
 
 %build
+# TODO: write dependecies and use gobuild
+# gobuild builds to _bin?
+make ZREPL_VERSION=%{version} build
 
 
 %install
-install -D -m 755 %{SOURCE1} %{buildroot}%{_sbindir}/zrepl
+install -D -m 755 artifacts/zrepl %{buildroot}%{_sbindir}/zrepl
 install -D -m 644 dist/systemd/zrepl.service %{buildroot}%{_unitdir}/zrepl.service
 sed -i s:/usr/local/bin/:%{_sbindir}/:g %{buildroot}%{_unitdir}/zrepl.service
 
