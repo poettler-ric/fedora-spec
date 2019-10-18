@@ -49,9 +49,9 @@ make ZREPL_VERSION=%{version} build
 
 
 %install
-install -D -m 755 artifacts/zrepl %{buildroot}%{_sbindir}/zrepl
+install -D -m 755 artifacts/zrepl %{buildroot}%{_bindir}/zrepl
 install -D -m 644 dist/systemd/zrepl.service %{buildroot}%{_unitdir}/zrepl.service
-sed -i s:/usr/local/bin/:%{_sbindir}/:g %{buildroot}%{_unitdir}/zrepl.service
+sed -i s:/usr/local/bin/:%{_bindir}/:g %{buildroot}%{_unitdir}/zrepl.service
 
 
 %post
@@ -69,7 +69,7 @@ sed -i s:/usr/local/bin/:%{_sbindir}/:g %{buildroot}%{_unitdir}/zrepl.service
 %files
 %defattr(-,root,root)
 %license LICENSE
-%{_sbindir}/zrepl
+%{_bindir}/zrepl
 %{_unitdir}/zrepl.service
 
 
