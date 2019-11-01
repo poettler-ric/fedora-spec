@@ -16,6 +16,7 @@ configurations:
             _vda:
                 disk: vda
     ws:
+        efi: True
         update_volumes:
             root:
                 mountpoint: /
