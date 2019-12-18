@@ -1,14 +1,14 @@
 %global debug_package %{nil}
 
 %global goipath github.com/zrepl/zrepl
-Version:        0.2.0
+Version:        0.2.1
 
 %if 0%{?go_compiler}
 %gometa
 %endif
 
 Name:           zrepl
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        One-stop ZFS backup & replication solution
 
 License:        MIT
@@ -18,6 +18,7 @@ Source0:	%{gosource}
 %else
 Source0:	%{name}-%{version}.tar.gz
 %endif
+Patch0:      fixbuild.patch
 
 BuildRequires:      systemd
 BuildRequires:      %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
@@ -40,16 +41,17 @@ Config file is expected to be '/etc/zrepl/zrepl.yml'
 %else
 %setup -q -n %{name}-%{version}
 %endif
+%patch0 -p1
 
 
 %build
 # TODO: write dependecies and use gobuild
 # gobuild builds to _bin?
-make ZREPL_VERSION=%{version} build
+make ZREPL_VERSION=%{version} zrepl-bin
 
 
 %install
-install -D -m 755 artifacts/zrepl %{buildroot}%{_bindir}/zrepl
+install -D -m 755 artifacts/zrepl-linux-amd64 %{buildroot}%{_bindir}/zrepl
 install -D -m 644 dist/systemd/zrepl.service %{buildroot}%{_unitdir}/zrepl.service
 sed -i s:/usr/local/bin/:%{_bindir}/:g %{buildroot}%{_unitdir}/zrepl.service
 

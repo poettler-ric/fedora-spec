@@ -1,0 +1,92 @@
+From 8679d2e9e168281be3c4602dc0a7417fe7116291 Mon Sep 17 00:00:00 2001
+From: Christian Schwarz <me@cschwarz.com>
+Date: Mon, 9 Dec 2019 13:37:19 +0100
+Subject: [PATCH] build: go.mod: bump go-netssh and drop go-critic replaces
+
+(go-netssh vendored util/circlog, so the circular dep is gone)
+
+fixes build failure reported by @poetterl-ric
+
+```
+  make ZREPL_VERSION=0.2.1 zrepl-bin
+    GO111MODULE=on go build -mod=readonly -ldflags "-X github.com/zrepl/zrepl/version.zreplVersion=0.2.1" -o "artifacts/zrepl-linux-amd64"
+    go: github.com/problame/go-netssh@v0.0.0-20191026123024-f34099f4f6b1 requires
+            github.com/zrepl/zrepl@v0.2.0 requires
+            github.com/golangci/lint-1@v0.0.0-20181222135242-d2cdd8c08219: invalid version: git fetch --unshallow -f origin in /builddir/go/pkg/mod/cache/vcs/ca789ff49d608cda239a48837cfeea6e9dcdb2bce20051383910eef46b623a33: exit status 128:
+            fatal: git fetch-pack: expected shallow list
+```
+---
+ go.mod | 19 ++-----------------
+ go.sum |  5 +++++
+ 2 files changed, 7 insertions(+), 17 deletions(-)
+
+diff --git a/go.mod b/go.mod
+index 8845350..ef6c616 100644
+--- a/go.mod
++++ b/go.mod
+@@ -21,11 +21,11 @@ require (
+ 	github.com/onsi/gomega v1.7.0 // indirect
+ 	github.com/pkg/errors v0.8.1
+ 	github.com/pkg/profile v1.2.1
+-	github.com/problame/go-netssh v0.0.0-20191026123024-f34099f4f6b1
++	github.com/problame/go-netssh v0.0.0-20191209123953-18d8aa6923c7
+ 	github.com/prometheus/client_golang v1.2.1
+ 	github.com/sergi/go-diff v1.0.1-0.20180205163309-da645544ed44 // go1.12 thinks it needs this
+ 	github.com/spf13/cobra v0.0.2
+-	github.com/spf13/pflag v1.0.3
++	github.com/spf13/pflag v1.0.5
+ 	github.com/stretchr/testify v1.4.0
+ 	github.com/yudai/gojsondiff v0.0.0-20170107030110-7b1b7adf999d
+ 	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // go1.12 thinks it needs this
+@@ -35,18 +35,3 @@ require (
+ 	golang.org/x/sys v0.0.0-20191010194322-b09406accb47
+ 	google.golang.org/grpc v1.17.0
+ )
+-
+-// invalid dates in transitive dependencies (first validated in Go 1.13, didn't fail in earlier Go versions)
+-replace (
+-	github.com/go-critic/go-critic v0.0.0-20181204210945-1df300866540 => github.com/go-critic/go-critic v0.3.5-0.20190526074819-1df300866540
+-	github.com/go-critic/go-critic v0.0.0-20181204210945-ee9bf5809ead => github.com/go-critic/go-critic v0.3.5-0.20190210220443-ee9bf5809ead
+-	github.com/golangci/errcheck v0.0.0-20181003203344-ef45e06d44b6 => github.com/golangci/errcheck v0.0.0-20181223084120-ef45e06d44b6
+-	github.com/golangci/go-tools v0.0.0-20180109140146-35a9f45a5db0 => github.com/golangci/go-tools v0.0.0-20190124090046-35a9f45a5db0
+-	github.com/golangci/go-tools v0.0.0-20180109140146-af6baa5dc196 => github.com/golangci/go-tools v0.0.0-20190318060251-af6baa5dc196
+-	github.com/golangci/gofmt v0.0.0-20181105071733-0b8337e80d98 => github.com/golangci/gofmt v0.0.0-20181222123516-0b8337e80d98
+-	github.com/golangci/gosec v0.0.0-20180901114220-66fb7fc33547 => github.com/golangci/gosec v0.0.0-20190211064107-66fb7fc33547
+-	github.com/golangci/ineffassign v0.0.0-20180808204949-42439a7714cc => github.com/golangci/ineffassign v0.0.0-20190609212857-42439a7714cc
+-	github.com/golangci/lint-1 v0.0.0-20180610141402-ee948d087217 => github.com/golangci/lint-1 v0.0.0-20190420132249-ee948d087217
+-	golang.org/x/tools v0.0.0-20190125232054-379209517ffe => golang.org/x/tools v0.0.0-20190205201329-379209517ffe
+-	mvdan.cc/unparam v0.0.0-20190124213536-fbb59629db34 => mvdan.cc/unparam v0.0.0-20190209190245-fbb59629db34
+-)
+diff --git a/go.sum b/go.sum
+index 1ceb325..7c87622 100644
+--- a/go.sum
++++ b/go.sum
+@@ -202,6 +202,8 @@ github.com/problame/go-netssh v0.0.0-20190110232351-09d6bc45d284 h1:GX8YFBfSL6Gl
+ github.com/problame/go-netssh v0.0.0-20190110232351-09d6bc45d284/go.mod h1:XMR9fjP5/wMyFK0Ifk9ZHDFem4Rukm+ChvoYr2nxrgw=
+ github.com/problame/go-netssh v0.0.0-20191026123024-f34099f4f6b1 h1:HH8yzlaZq/A8xdJaSj/eu32yFFySWAJMTmOQPAGwfYg=
+ github.com/problame/go-netssh v0.0.0-20191026123024-f34099f4f6b1/go.mod h1:JRs3nyBjvOv/9YHC+Vlw9z1Jfzl5s5t0BNnTzmclj1c=
++github.com/problame/go-netssh v0.0.0-20191209123953-18d8aa6923c7 h1:Oik8tLrLhoMq4fduDRuNNOAQ+q0M0dXkjAYLUf4+mAc=
++github.com/problame/go-netssh v0.0.0-20191209123953-18d8aa6923c7/go.mod h1:Ba6RaFpK1+IHWs1wLZ6sCBuXkt4iAVLeOG5GinXHusM=
+ github.com/prometheus/client_golang v0.0.0-20180410130117-e11c6ff8170b/go.mod h1:7SWBe2y4D6OKWSNQJUaRYU/AaXPKyh/dDVn+NZz0KFw=
+ github.com/prometheus/client_golang v0.9.1/go.mod h1:7SWBe2y4D6OKWSNQJUaRYU/AaXPKyh/dDVn+NZz0KFw=
+ github.com/prometheus/client_golang v1.0.0/go.mod h1:db9x61etRT2tGnBNRi70OPL5FsnadC4Ky3P0J6CfImo=
+@@ -251,6 +253,8 @@ github.com/spf13/jwalterweatherman v1.1.0/go.mod h1:aNWZUN0dPAAO/Ljvb5BEdw96iTZ0
+ github.com/spf13/pflag v1.0.1/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnInEg4=
+ github.com/spf13/pflag v1.0.3 h1:zPAT6CGy6wXeQ7NtTnaTerfKOsV6V6F8agHXFiazDkg=
+ github.com/spf13/pflag v1.0.3/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnInEg4=
++github.com/spf13/pflag v1.0.5 h1:iy+VFUOCP1a+8yFto/drg2CJ5u0yRoB7fZw3DKv/JXA=
++github.com/spf13/pflag v1.0.5/go.mod h1:McXfInJRrz4CZXVZOBLb0bTZqETkiAhM9Iw0y3An2Bg=
+ github.com/spf13/viper v1.0.2/go.mod h1:A8kyI5cUJhb8N+3pkfONlcEcZbueH6nhAm0Fq7SrnBM=
+ github.com/spf13/viper v1.3.2/go.mod h1:ZiWeW+zYFKm7srdB9IoDzzZXaJaI5eL9QjNiN/DMA2s=
+ github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
+@@ -333,6 +337,7 @@ golang.org/x/tools v0.0.0-20190521203540-521d6ed310dd/go.mod h1:RgjU9mgBXZiqYHBn
+ golang.org/x/tools v0.0.0-20190524210228-3d17549cdc6b/go.mod h1:RgjU9mgBXZiqYHBnxXauZ1Gv1EHHAz9KjViQ78xBX0Q=
+ google.golang.org/appengine v1.1.0 h1:igQkv0AAhEIvTEpD5LIpAfav2eeVO9HBTjvKHVJPRSs=
+ google.golang.org/appengine v1.1.0/go.mod h1:EbEs0AVv82hx2wNQdGPgUI5lhzA/G0D9YwlJXL52JkM=
++google.golang.org/genproto v0.0.0-20180817151627-c66870c02cf8 h1:Nw54tB0rB7hY/N0NQvRW8DG4Yk3Q6T9cu9RcFQDu1tc=
+ google.golang.org/genproto v0.0.0-20180817151627-c66870c02cf8/go.mod h1:JiN7NxoALGmiZfu7CAH4rXhgtRTLTxftemlI0sWmxmc=
+ google.golang.org/genproto v0.0.0-20181202183823-bd91e49a0898 h1:yvw+zsSmSM02Z5H3ZdEV7B7Ql7eFrjQTnmByJvK+3J8=
+ google.golang.org/genproto v0.0.0-20181202183823-bd91e49a0898/go.mod h1:7Ep/1NZk928CDR8SjdVbjWNpdIf6nzjE3BTgJDr2Atg=
+-- 
+2.23.0
+
